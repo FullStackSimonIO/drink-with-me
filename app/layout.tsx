@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter as FontSans } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
-import Navbar from "@/components/shared/navbar/Navbar";
+
 import { ThemeProvider } from "@/context/ThemeProvider";
 import { ClerkProvider } from "@clerk/nextjs";
 
@@ -31,7 +31,6 @@ export default function RootLayout({
               fontSans.variable
             )}
           >
-            <Navbar />
             {children}
           </body>
         </html>
