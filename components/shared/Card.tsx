@@ -1,30 +1,39 @@
 import Image from "next/image";
 import React from "react";
+import { Button } from "../ui/button";
 
 const Card = () => {
   return (
     <div className="max-w-sm mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden transform transition-transform duration-300 hover:scale-105">
-      <div className="relative">
-        <Image
-          className="w-full h-48 object-cover"
-          src="https://via.placeholder.com/400x300"
-          alt="Card Image"
-          width={400}
-          height={300}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-70"></div>
+      <div className="flex justify-center ">
+        <div className="relative w-32 h-32">
+          <Image
+            className="rounded-full object-cover"
+            src="/assets/liebwein.png"
+            alt="Card Image"
+            layout="fill"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-70 rounded-full"></div>
+        </div>
       </div>
       <div className="p-6">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-          Titel der Karte
+        <h2 className="text-2xl flex items-center justify-center font-bold text-primary-500">
+          Herzlichen Glückwunsch! 🎉
         </h2>
-        <p className="text-gray-700 dark:text-gray-300 mt-4">
-          Dies ist eine Beschreibung, die kurz und prägnant ist. Sie bietet dem
-          Leser einen schnellen Überblick über den Inhalt der Karte.
+        <p className="flex items-center justify-center  text-gray-700 dark:text-gray-300 mt-4 text-lg">
+          Tobias Liebwein
         </p>
-        <button className="mt-6 px-4 py-2 bg-primary-500 text-white rounded-lg shadow-md hover:bg-primary-600 transition-colors duration-300">
-          Mehr erfahren
-        </button>
+        <p className="flex items-center justify-center text-gray-700 dark:text-gray-300 mt-4 text-lg">
+          Gesoffen: 50 Halbe
+        </p>
+        <p className="flex items-center justify-center text-gray-700 dark:text-gray-300 mt-4 text-lg">
+          Jahresumsatz: 600 Halbe
+        </p>
+        <div className="flex items-center justify-center text-dark-100 dark:text-white">
+          <Button className="mt-4 border-primary-500 bg" variant="outline">
+            Profil ansehen
+          </Button>
+        </div>
       </div>
     </div>
   );
