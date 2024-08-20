@@ -4,14 +4,16 @@ import Card from "../shared/Card";
 
 const MonthlyWinner = () => {
   return (
-    <div className="flex flex-col pt-10 items-center h-screen text-3xl font-bold background-light800_dark300">
-      <div className="flex flex-col items-center justify-center text-center">
-        <h2 className="mb-6 dark:text-white text-dark-100">
-          Aktueller Alkoholiker des Monats:..w
+    <section className="w-full h-screen">
+      <div className="flex flex-col pt-10 justify-center items-center h-screen font-bold background-light800_dark300">
+        <h2 className="text-5xl font-bold pb-10 dark:text-white text-black">
+          Alkoholiker des Monats:
         </h2>
-        <Card />
+        <div className="flex flex-col items-center justify-center text-center">
+          <Card />
+        </div>
       </div>
-    </div>
+    </section>
   );
 };
 
