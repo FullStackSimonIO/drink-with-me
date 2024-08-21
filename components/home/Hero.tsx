@@ -1,8 +1,12 @@
+"use client";
 import Image from "next/image";
 import React from "react";
 import MonthlyWinner from "./MonthlyWinner";
+import { useUser } from "@clerk/nextjs";
 
 const Hero = () => {
+  const { user, isLoaded, isSignedIn } = useUser();
+
   return (
     <div>
       <section className="relative flex flex-col items-center justify-center w-full h-screen background-light800_dark300">
@@ -13,7 +17,7 @@ const Hero = () => {
               DRINK WITH ME
             </h1>
             <p className="mt-4 text-gray-600 dark:text-gray-400 md:text-lg lg:text-xl">
-              {`Herzlich Willkommen zurück Simon! `}
+              {`Herzlich Willkommen zurück ${user?.firstName}`}
             </p>
           </div>
 

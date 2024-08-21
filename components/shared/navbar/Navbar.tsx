@@ -27,6 +27,14 @@ const Navbar = () => {
       >
         Home
       </Link>
+
+      <Link
+        href="/tracker"
+        className="hidden lg:flex items-center gap-2 text-dark-100 dark:text-white hover:text-primary-500 dark:hover:text-primary-500  text-lg font-bold"
+      >
+        Tracker
+      </Link>
+
       <Link
         href="/saeufer"
         className="hidden lg:flex items-center gap-2 text-dark-100 dark:text-white hover:text-primary-500 dark:hover:text-primary-500 text-lg font-bold"
