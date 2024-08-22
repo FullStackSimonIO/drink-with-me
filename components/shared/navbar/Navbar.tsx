@@ -1,9 +1,18 @@
-import { SignedIn, SignedOut, SignIn, SignUp, UserButton } from "@clerk/nextjs";
+"use client";
+import {
+  SignedIn,
+  SignedOut,
+  SignIn,
+  SignInButton,
+  SignUp,
+  UserButton,
+} from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import Theme from "./Theme";
 import MobileNavbar from "./MobileNavbar";
+import { Authenticated, Unauthenticated } from "convex/react";
 
 const Navbar = () => {
   return (
@@ -51,9 +60,8 @@ const Navbar = () => {
       <div className="flex-between gap-5">
         <Theme />
 
-        <SignedIn>
+        <Authenticated>
           <UserButton
-            afterSignOutUrl="/"
             appearance={{
               elements: {
                 avatarBox: "h-10 w-10",
@@ -63,10 +71,10 @@ const Navbar = () => {
               },
             }}
           />
-        </SignedIn>
-        <SignedOut>
-          <SignIn />
-        </SignedOut>
+        </Authenticated>
+        <Unauthenticated>
+          <SignInButton />
+        </Unauthenticated>
 
         <MobileNavbar />
       </div>

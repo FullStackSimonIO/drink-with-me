@@ -1,0 +1,14 @@
+datasource db {
+  provider = "mongodb"
+  url      = "mongodb+srv://fullstacksimon:fullstacksimon@cluster0.0byu3.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id             String  @id @default(auto()) @map("_id") @db.ObjectId
+  name           String?
+  monthlyCounter Int?
+}
