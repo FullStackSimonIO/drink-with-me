@@ -12,7 +12,7 @@ import Link from "next/link";
 import React from "react";
 import Theme from "./Theme";
 import MobileNavbar from "./MobileNavbar";
-import { Authenticated, Unauthenticated } from "convex/react";
+
 
 const Navbar = () => {
   return (
@@ -60,7 +60,7 @@ const Navbar = () => {
       <div className="flex-between gap-5">
         <Theme />
 
-        <Authenticated>
+        <SignedIn>
           <UserButton
             appearance={{
               elements: {
@@ -71,10 +71,10 @@ const Navbar = () => {
               },
             }}
           />
-        </Authenticated>
-        <Unauthenticated>
+        </SignedIn>
+        <SignedOut>
           <SignInButton />
-        </Unauthenticated>
+        </SignedOut>
 
         <MobileNavbar />
       </div>
