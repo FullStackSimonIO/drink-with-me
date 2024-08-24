@@ -1,4 +1,4 @@
-import CurrMonthlyTable from "@/components/home/CurrMonthlyTable";
+import { Chart } from "@/components/home/CurrMonthlyTable";
 import Hero from "@/components/home/Hero";
 import MonthlyWinner from "@/components/home/MonthlyWinner";
 import WinnersPodium from "@/components/home/TopThreeWinners";
@@ -11,7 +11,7 @@ const page = () => {
       <Navbar />
       <Hero />
       <WinnersPodium />
-      <CurrMonthlyTable />
+      <Chart />
     </div>
   );
 };
