@@ -19,12 +19,12 @@ import {
 } from "@/components/ui/chart";
 
 const chartData = [
-  { name: "Simon E.", desktop: 186 },
-  { name: "Alex Z.", desktop: 305 },
-  { name: "Christian Z.", desktop: 237 },
-  { name: "Simon M.", desktop: 73 },
-  { name: "Tobias L.", desktop: 209 },
-  { name: "Michael Z.", desktop: 214 },
+  { name: "Simon E.", desktop: 10 },
+  { name: "Alex Z.", desktop: 13 },
+  { name: "Christian Z.", desktop: 43 },
+  { name: "Simon M.", desktop: 24 },
+  { name: "Tobias L.", desktop: 2 },
+  { name: "Michael Z.", desktop: 0 },
 ];
 
 const chartConfig = {
@@ -38,12 +38,18 @@ export function Chart() {
   return (
     <section className="flex flex-col items-center justify-center w-full h-screen background-light800_dark300">
       <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold">Aktueller Stand</h2>
+        <h2 className="text-3xl font-bold text-primary-500">Aktueller Stand</h2>
       </div>
       <Card className="w-full max-w-4xl">
         <CardHeader>
-          <CardTitle>Aktueller Stand</CardTitle>
-          <CardDescription>January - June 2024</CardDescription>
+          {/* Dynamically render Month + Year here */}
+          <CardTitle className="text-primary-100 text-2xl">
+            August 2024
+          </CardTitle>
+          <CardDescription className="text-primary-100 font-semibold">
+            Das Chart gilt immer für den aktuellen Monat und setzt sich am
+            Monatsanfang automatisch zurück
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <ChartContainer config={chartConfig} className="w-full">
@@ -83,9 +89,13 @@ export function Chart() {
             </BarChart>
           </ChartContainer>
         </CardContent>
-        <CardFooter className="flex flex-col items-start gap-2 text-sm">
-          <p>Herzlichen Glückwunsch Christian!</p>
-          <p>Du liegst mit 36 Halben vorne!</p>
+        <CardFooter className="flex justify-center items-center flex-col  gap-2 text-sm">
+          <p className="text-primary-100 text-lg font-semibold">
+            Herzlichen Glückwunsch Christian!
+          </p>
+          <p className="text-primary-100 text-lg font-semibold">
+            Du liegst mit 36 Halben vorne!
+          </p>
         </CardFooter>
       </Card>
     </section>
