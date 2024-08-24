@@ -27,8 +27,8 @@ const Hero = () => {
               <Image
                 src="/assets/beer.png"
                 alt="Hero"
-                layout="fill"
-                objectFit="contain"
+                width={500}
+                height={500}
               />
             </div>
           </div>

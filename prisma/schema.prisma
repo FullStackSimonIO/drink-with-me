@@ -10,8 +10,9 @@ datasource db {
 
 model User {
   id           String  @id @default(cuid())
-  monthlyCount Int     @default(0)
-  yearlyCount  Int     @default(0)
-  currCount    Int     @default(0)
+  monthlyCount Int?
+  yearlyCount  Int?
+  currCount    Int?
   name         String?
+  profileImage String? // Neues Feld für das Profilbild
 }
