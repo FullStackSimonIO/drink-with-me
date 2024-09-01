@@ -1,9 +1,15 @@
 // components/FridgeCounter.tsx
-import { prisma } from "@/lib/prisma"; // Make sure to set up a Prisma client in /lib/prisma
+"use client"; // To use React state and handle UI updates
 
-export default function FridgeCounter({ fridgeId }) {
+import { useState } from "react";
+import { prisma } from "@/app/lib/prisma";
+
+export default function FridgeCounter({ initialCount, fridgeId }: any) {
+  const [beerCount, setBeerCount] = useState(initialCount);
+
   async function incrementBeerCount() {
     "use server";
+    setBeerCount(beerCount + 1);
     await prisma.fridge.update({
       where: { id: fridgeId },
       data: {
@@ -16,18 +22,22 @@ export default function FridgeCounter({ fridgeId }) {
 
   async function decrementBeerCount() {
     "use server";
-    await prisma.fridge.update({
-      where: { id: fridgeId },
-      data: {
-        beerCount: {
-          decrement: 1,
+    if (beerCount > 0) {
+      setBeerCount(beerCount - 1);
+      await prisma.fridge.update({
+        where: { id: fridgeId },
+        data: {
+          beerCount: {
+            decrement: 1,
+          },
         },
-      },
-    });
+      });
+    }
   }
 
   return (
     <div>
+      <p>Beers in fridge: {beerCount}</p>
       <button
         onClick={incrementBeerCount}
         className="bg-green-500 text-white py-2 px-4 rounded-lg"
