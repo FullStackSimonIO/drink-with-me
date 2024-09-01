@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { getTopThreeUsersByMonthlyCount } from "@/app/actions/getMonthlyTopThree";
 import Image from "next/image";
+import { TypewriterEffect } from "../ui/typewriter-effect";
 
 export default function WinnersPodium() {
   const [topUsers, setTopUsers] = useState<any[]>([]);
@@ -37,10 +38,32 @@ export default function WinnersPodium() {
 
   const previousMonth = getPreviousMonth();
 
+  const monthlyWinnerWords = [
+    {
+      text: "Alkoholiker",
+      className:
+        "text-4xl font-extrabold tracking-tight leading-none md:text-5xl xl:text-6xl dark:text-white",
+    },
+    {
+      text: "des",
+      className:
+        "text-4xl font-extrabold tracking-tight leading-none md:text-5xl xl:text-6xl dark:text-white",
+    },
+    {
+      text: "Monats",
+      className:
+        "text-4xl font-extrabold tracking-tight leading-none md:text-5xl xl:text-6xl dark:text-white",
+    },
+  ];
+
   return (
-    <section className="flex flex-col w-full h-screen justify-center items-center gap-6 bg-light-800_dark-300 py-12 px-4 md:px-8 lg:px-16 background-light800_dark300">
+    <section
+      id="monthlyWinner"
+      className="flex flex-col w-full h-screen justify-center items-center gap-6 bg-light-800_dark-300 py-12 px-4 md:px-8 lg:px-16 background-light800_dark300"
+    >
       <h2 className="text-2xl md:text-4xl font-bold text-center text-white mb-8">
-        Alkoholiker des Monats <br />
+        <TypewriterEffect words={monthlyWinnerWords} />
+        <br />
         <p className="text-primary-500 pt-5">{previousMonth}</p>
       </h2>
       <div className="flex flex-col md:flex-row justify-center items-center gap-6">
@@ -75,6 +98,7 @@ export default function WinnersPodium() {
                   🥉
                 </div>
               )}
+              {/* Dynamically Render Winner Image here*/}
               <Image
                 src="/assets/liebwein.png"
                 alt={user.name}

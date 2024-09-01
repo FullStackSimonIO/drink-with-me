@@ -94,7 +94,9 @@ export function Chart() {
             Herzlichen Glückwunsch Christian!
           </p>
           <p className="text-primary-100 text-lg font-semibold">
-            Du liegst mit 36 Halben vorne!
+            Du hast einen Vorsprung von{" "}
+            <span className="text-primary-500">19</span> Halben zum
+            Zweitplatzierten!
           </p>
         </CardFooter>
       </Card>

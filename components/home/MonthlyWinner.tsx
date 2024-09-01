@@ -8,7 +8,10 @@ const MonthlyWinner = () => {
   const header = [{ text: "Alkoholiker" }, { text: "des" }, { text: "Monats" }];
 
   return (
-    <section className="relative w-full h-screen bg-gray-100 dark:bg-gray-900 overflow-hidden">
+    <section
+      id="monthlyWinner"
+      className="relative w-full h-screen bg-gray-100 dark:bg-gray-900 overflow-hidden"
+    >
       {/* Spotlight Effects */}
       <Spotlight
         fill="white"

@@ -16,3 +16,9 @@ model User {
   name         String?
   profileImage String? // Neues Feld für das Profilbild
 }
+
+model Fridge {
+  id        Int @id @default(autoincrement())
+  beerCount Int @default(0)
+  // other fields you might have
+}
