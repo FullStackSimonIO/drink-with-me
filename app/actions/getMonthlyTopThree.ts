@@ -1,20 +1,31 @@
-// actions/getTopThreeUsers.ts
+// app/actions/getTopThreeUsers.ts
 "use server";
 
-import { prisma } from "../lib/prisma";
+import { prisma } from "@/app/lib/prisma";
 
 export async function getTopThreeUsersByMonthlyCount() {
   try {
-    const topThreeUsers = await prisma.user.findMany({
+    const users = await prisma.user.findMany({
       orderBy: {
         monthlyCount: "desc",
       },
-      take: 3, // Limitiert auf die Top 3
+      take: 3,
     });
 
-    return { users: topThreeUsers, success: true };
+    return {
+      success: true,
+      users: users.map((user) => ({
+        id: user.id,
+        name: user.name,
+        profileImage: user.profileImage,
+        monthlyCount: user.monthlyCount,
+        yearlyCount: user.yearlyCount,
+      })),
+    };
   } catch (error: any) {
-    console.error("Error fetching top three users by monthly count:", error);
-    return { error: error.message, success: false };
+    return {
+      success: false,
+      error: error.message,
+    };
   }
 }

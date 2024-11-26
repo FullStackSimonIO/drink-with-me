@@ -1,14 +1,13 @@
+"use client";
 import { Chart } from "@/components/home/CurrMonthlyTable";
 import Hero from "@/components/home/Hero";
-import MonthlyWinner from "@/components/home/MonthlyWinner";
 import WinnersPodium from "@/components/home/TopThreeWinners";
 import Navbar from "@/components/shared/navbar/Navbar";
 import React from "react";
 
-const page = () => {
+const Page = () => {
   return (
     <div>
-      <Navbar />
       <Hero />
       <WinnersPodium />
       <Chart />
@@ -16,4 +15,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

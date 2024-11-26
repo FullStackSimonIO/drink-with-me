@@ -1,32 +1,31 @@
-// actions/updateCount.ts
-"use server"; // Markiere diese Datei als Server-kompatibel
+"use server";
 
-import { prisma } from "../lib/prisma";
+import { prisma } from "@/app/lib/prisma";
 
-interface UpdateCountInput {
-  userId: string;
-  increment: boolean;
+export async function incrementUserScore(userId: string) {
+  try {
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: { currScore: { increment: 1 } }, // currScore um 1 erhöhen
+    });
+
+    return updatedUser;
+  } catch (error: any) {
+    console.error("Error incrementing user score:", error);
+    throw new Error("Unable to increment user score.");
+  }
 }
 
-export async function updateCount({ userId, increment }: UpdateCountInput) {
+export async function decrementUserScore(userId: string) {
   try {
-    const user = await prisma.user.update({
+    const updatedUser = await prisma.user.update({
       where: { id: userId },
-      data: {
-        currCount: {
-          increment: increment ? 1 : -1,
-        },
-        monthlyCount: {
-          increment: increment ? 1 : -1,
-        },
-        yearlyCount: {
-          increment: increment ? 1 : -1,
-        },
-      },
+      data: { currScore: { decrement: 1 } }, // currScore um 1 verringern
     });
-    return { user, success: true };
+
+    return updatedUser;
   } catch (error: any) {
-    console.error("Error updating counts:", error);
-    return { error: error.message, success: false };
+    console.error("Error decrementing user score:", error);
+    throw new Error("Unable to decrement user score.");
   }
 }

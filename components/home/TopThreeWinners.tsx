@@ -5,8 +5,9 @@ import { getTopThreeUsersByMonthlyCount } from "@/app/actions/getMonthlyTopThree
 import Image from "next/image";
 import { TypewriterEffect } from "../ui/typewriter-effect";
 
-export default function WinnersPodium() {
+export default function TopThreeWinners() {
   const [topUsers, setTopUsers] = useState<any[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchTopUsers = async () => {
@@ -16,27 +17,23 @@ export default function WinnersPodium() {
         setTopUsers(response.users!);
       } else {
         console.error("Failed to fetch top users:", response.error);
+        setError(response.error);
       }
     };
 
     fetchTopUsers();
   }, []);
 
-  // Get the previous month
-  const getPreviousMonth = () => {
+  // Get the current month
+  const getCurrentMonth = () => {
     const currentDate = new Date();
-    const previousMonthDate = new Date(
-      currentDate.getFullYear(),
-      currentDate.getMonth() - 1,
-      1
-    );
-    return previousMonthDate.toLocaleString("de-DE", {
+    return currentDate.toLocaleString("de-DE", {
       month: "long",
       year: "numeric",
     });
   };
 
-  const previousMonth = getPreviousMonth();
+  const currentMonth = getCurrentMonth();
 
   const monthlyWinnerWords = [
     {
@@ -64,9 +61,10 @@ export default function WinnersPodium() {
       <h2 className="text-2xl md:text-4xl font-bold text-center text-white mb-8">
         <TypewriterEffect words={monthlyWinnerWords} />
         <br />
-        <p className="text-primary-500 pt-5">{previousMonth}</p>
+        <p className="text-primary-500 pt-5">{currentMonth}</p>
       </h2>
       <div className="flex flex-col md:flex-row justify-center items-center gap-6">
+        {error && <p className="text-red-500">{error}</p>}
         {topUsers.map((user, index) => (
           <div
             key={user.id}
@@ -98,14 +96,13 @@ export default function WinnersPodium() {
                   🥉
                 </div>
               )}
-              {/* Dynamically Render Winner Image here*/}
-              <Image
-                src="/assets/liebwein.png"
+              {/*<Image
+                src={user.profileImage}
                 alt={user.name}
                 width={100}
                 height={100}
                 className="border rounded-full"
-              />
+              /> */}
               <h3 className="mt-4 text-2xl font-semibold text-primary-500 text-center">
                 {user.name}
               </h3>

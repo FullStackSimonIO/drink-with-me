@@ -13,7 +13,6 @@ import React from "react";
 import Theme from "./Theme";
 import MobileNavbar from "./MobileNavbar";
 
-
 const Navbar = () => {
   return (
     <nav className="flex-between background-light900_dark200 fixed z-50 w-full gap-5 p-6 shadow-light-300 dark:shadow-none sm:px-12">
@@ -38,20 +37,20 @@ const Navbar = () => {
       </Link>
 
       <Link
-        href="/tracker"
-        className="hidden lg:flex items-center gap-2 text-dark-100 dark:text-white hover:text-primary-500 dark:hover:text-primary-500  text-lg font-bold"
+        href="/biertracker"
+        className="hidden lg:flex items-center gap-2 text-dark-100 dark:text-white hover:text-primary-500 dark:hover:text-primary-500 text-lg font-bold"
       >
-        Tracker
+        Biertracker
       </Link>
 
       <Link
-        href="/saeufer"
-        className="hidden lg:flex items-center gap-2 text-dark-100 dark:text-white hover:text-primary-500 dark:hover:text-primary-500 text-lg font-bold"
+        href="/vorrat"
+        className="hidden lg:flex items-center gap-2 text-dark-100 dark:text-white hover:text-primary-500 dark:hover:text-primary-500  text-lg font-bold"
       >
-        Säufer
+        Vorrat
       </Link>
       <Link
-        href="/profile"
+        href="/profil"
         className="hidden lg:flex items-center gap-2 text-dark-100 dark:text-white hover:text-primary-500 dark:hover:text-primary-500 text-lg font-bold"
       >
         Profil
