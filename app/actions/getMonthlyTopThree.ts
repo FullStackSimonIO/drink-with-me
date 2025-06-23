@@ -7,7 +7,7 @@ export async function getTopThreeUsersByMonthlyCount() {
   try {
     const users = await prisma.user.findMany({
       orderBy: {
-        monthlyCount: "desc",
+        monthlyScore: "desc",
       },
       take: 3,
     });
@@ -18,8 +18,8 @@ export async function getTopThreeUsersByMonthlyCount() {
         id: user.id,
         name: user.name,
         profileImage: user.profileImage,
-        monthlyCount: user.monthlyCount,
-        yearlyCount: user.yearlyCount,
+        monthlyCount: user.monthlyScore,
+        yearlyCount: user.yearlyScore,
       })),
     };
   } catch (error: any) {
