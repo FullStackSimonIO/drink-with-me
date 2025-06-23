@@ -10,8 +10,7 @@ export async function getUsers() {
       id: user.id,
       name: user.name,
       currScore: user.currScore,
-      yearlyScore: user.yearlyScore,
-      monthlyScore: user.monthlyScore,
+
       avatarUrl: user.profileImage, // Angenommen, das Feld heißt 'profileImage'
     }));
   } catch (error: any) {

@@ -1,5 +1,4 @@
 import { getUsers } from "@/app/actions/getUsers";
-import UserScoreList from "@/components/beertracker/Card";
 import { ProfileCard } from "@/components/ProfileCard";
 import React from "react";
 

@@ -2,7 +2,7 @@
 import { Chart } from "@/components/home/CurrMonthlyTable";
 import { BeerDataTable } from "@/components/home/DataTable";
 import Hero from "@/components/home/Hero";
-import WinnersPodium from "@/components/home/TopThreeWinners";
+
 import Navbar from "@/components/shared/navbar/Navbar";
 import { useUser } from "@clerk/nextjs";
 import React, { useEffect } from "react";
