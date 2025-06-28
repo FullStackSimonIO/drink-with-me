@@ -4,6 +4,7 @@
 import React from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { Plus, Minus } from "lucide-react"; // <-- Icons importieren
 import {
   Table,
   TableBody,
@@ -13,15 +14,14 @@ import {
   TableRow,
 } from "../ui/table";
 import { Button } from "../ui/button";
-// importiere Role aus Prisma, damit Deine Rolle exakt stimmt
 import type { Role } from "@prisma/client";
 
 export type UserType = {
   id: string;
-  clerkUserId: string | null; // ← string|null, genau wie DB
-  role: Role; // ← "USER" oder "ADMIN"
+  clerkUserId: string | null;
+  role: Role;
   name: string;
-  profileImage: string | null; // ← null oder string
+  profileImage: string | null;
   balance: number;
   currScore: number;
 };
@@ -46,7 +46,7 @@ export default React.memo(function DrinkTable({
               <TableHead className="px-4 py-3 text-center text-orange-400">
                 Avatar
               </TableHead>
-              <TableHead className="px-4 py-3 text-left   text-orange-400 font-bold">
+              <TableHead className="px-4 py-3 text-left text-orange-400 font-bold">
                 Name
               </TableHead>
               <TableHead className="px-4 py-3 text-center text-orange-400">
@@ -56,7 +56,7 @@ export default React.memo(function DrinkTable({
                 Jährlicher Biercounter
               </TableHead>
               <TableHead className="px-4 py-3 text-center text-orange-400">
-                Trinken
+                Aktion
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -104,12 +104,13 @@ export default React.memo(function DrinkTable({
                   </TableCell>
 
                   {/* Actions */}
-                  <TableCell className="px-4 py-3 flex justify-center gap-2 bg-transparent">
+                  <TableCell className="px-4 py-3 text-center bg-transparent text-gray-600 dark:text-gray-400">
+                    {/* +1 nur für Admin */}
                     {isAdmin && (
                       <Button
-                        size="sm"
+                        size="icon" // benutze icon-Button
                         variant="secondary"
-                        className="flex-1"
+                        className="p-2"
                         onClick={async () => {
                           await fetch(`/api/users/${u.id}/balance`, {
                             method: "PATCH",
@@ -119,14 +120,16 @@ export default React.memo(function DrinkTable({
                           router.refresh();
                         }}
                       >
-                        +1
+                        <Plus className="w-4 h-4 text-gray-600 dark:text-gray-400" />
                       </Button>
                     )}
+
+                    {/* -1 für Admin oder für dich selbst */}
                     {(isAdmin || isMe) && (
                       <Button
-                        size="sm"
+                        size="icon"
                         variant="secondary"
-                        className="flex-1"
+                        className="p-2"
                         onClick={async () => {
                           await fetch(`/api/users/${u.id}/balance`, {
                             method: "PATCH",
@@ -136,7 +139,7 @@ export default React.memo(function DrinkTable({
                           router.refresh();
                         }}
                       >
-                        -1
+                        <Minus className="w-4 h-4 " />
                       </Button>
                     )}
                   </TableCell>
