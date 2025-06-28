@@ -7,6 +7,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@/context/ThemeProvider";
 import Navbar from "@/components/shared/navbar/Navbar";
+import { prisma } from "./lib/prisma";
 
 export const metadata: Metadata = {
   title: "Suff Bier",
@@ -19,20 +20,18 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-// optional: ganz explizit kein Cache
-export const fetchCache = "default-no-store";
-
 export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const res = await fetch("https://suff.beer/api/users", {
-    cache: "no-store", // direkt beim Fetch kein Caching
+  const users = await prisma.user.findMany({
+    orderBy: { name: "asc" },
+    select: { id: true, name: true, balance: true, currScore: true },
   });
-  const users = await res.json();
+
   return (
-    <html lang="en">
+    <html lang="de">
       <body>
         <ClerkProvider
           appearance={{
