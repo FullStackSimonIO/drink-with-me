@@ -174,25 +174,6 @@ export default React.memo(function DrinkTable({
                           <Beer className="w-4 h-4 text-gray-600 dark:text-gray-400" />
                         </Button>
                       )}
-
-                      {/* –1 Balance nur Admin */}
-                      {isAdmin && (
-                        <Button
-                          size="icon"
-                          variant="secondary"
-                          className="p-2"
-                          onClick={async () => {
-                            await fetch(`/api/users/${u.id}/balance`, {
-                              method: "PATCH",
-                              headers: { "Content-Type": "application/json" },
-                              body: JSON.stringify({ delta: -1 }),
-                            });
-                            router.refresh();
-                          }}
-                        >
-                          <Minus className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-                        </Button>
-                      )}
                     </div>
                   </TableCell>
                 </TableRow>
