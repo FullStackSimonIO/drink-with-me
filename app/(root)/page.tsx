@@ -1,17 +1,45 @@
 // app/page.tsx
 import Hero from "@/components/home/Hero";
 import DrinkTable, { UserType } from "@/components/home/DrinkTable";
-import { auth } from "@clerk/nextjs/server"; // ← /server nutzen
+import { auth } from "@clerk/nextjs/server";
+import { clerkClient } from "@clerk/nextjs/server";
 import { prisma } from "../lib/prisma";
+
+// Liste der Clerk-UserIDs, die Adminrechte haben sollen
+const ADMIN_IDS = (process.env.ADMIN_IDS || "").split(",");
 
 export const dynamic = "force-dynamic";
 
 export default async function Page() {
-  // 1) auth() gibt { userId: string | null }
   const { userId } = auth();
 
-  // 2) Lade alle Nutzer
-  const usersData = await prisma.user.findMany({
+  if (userId) {
+    // Clerk-User laden
+    const cu = await clerkClient.users.getUser(userId);
+
+    // Auf Admin prüfen
+    const isAdmin = ADMIN_IDS.includes(userId);
+
+    // Upsert: beim Erstellen ggf. Admin, im Update niemals Role anfassen
+    await prisma.user.upsert({
+      where: { clerkUserId: userId },
+      create: {
+        clerkUserId: userId,
+        name: cu.firstName || cu.emailAddresses[0].emailAddress,
+        profileImage: cu.imageUrl,
+        role: isAdmin ? "ADMIN" : "USER",
+      },
+      update: {
+        // nur Name & Bild updaten, Rolle bleibt wie sie ist
+        name: cu.firstName || cu.emailAddresses[0].emailAddress,
+        profileImage: cu.imageUrl,
+      },
+    });
+  }
+
+  // Jetzt nur echte Clerk-User laden
+  const users = await prisma.user.findMany({
+    where: { clerkUserId: { not: null } },
     orderBy: { name: "asc" },
     select: {
       id: true,
@@ -24,13 +52,8 @@ export default async function Page() {
     },
   });
 
-  const users: UserType[] = usersData.map((user) => ({
-    ...user,
-    profileImage: user.profileImage === null ? undefined : user.profileImage,
-  }));
-
-  // 3) Lade „me“ nur, wenn userId da ist
-  const meData = userId
+  // Me laden
+  const me: UserType | null = userId
     ? await prisma.user.findUnique({
         where: { clerkUserId: userId },
         select: {
@@ -45,18 +68,9 @@ export default async function Page() {
       })
     : null;
 
-  const me: UserType | null = meData
-    ? {
-        ...meData,
-        profileImage:
-          meData.profileImage === null ? undefined : meData.profileImage,
-      }
-    : null;
-
   return (
     <main className="pb-8">
       <Hero />
-      {/* Jetzt passen die Typen */}
       <DrinkTable users={users} me={me} />
     </main>
   );

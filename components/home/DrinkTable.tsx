@@ -13,13 +13,15 @@ import {
   TableRow,
 } from "../ui/table";
 import { Button } from "../ui/button";
+// importiere Role aus Prisma, damit Deine Rolle exakt stimmt
+import type { Role } from "@prisma/client";
 
 export type UserType = {
   id: string;
-  clerkUserId: string | null; // ← jetzt nullable
-  role: "USER" | "ADMIN";
+  clerkUserId: string | null; // ← string|null, genau wie DB
+  role: Role; // ← "USER" oder "ADMIN"
   name: string;
-  profileImage?: string;
+  profileImage: string | null; // ← null oder string
   balance: number;
   currScore: number;
 };
@@ -36,7 +38,7 @@ export default React.memo(function DrinkTable({
   const isAdmin = me?.role === "ADMIN";
 
   return (
-    <div className="w-full px-2 md:px-4 lg:px-8  background-light800_dark300">
+    <div className="w-full px-2 md:px-4 lg:px-8 py-4">
       <div className="overflow-x-auto card-wrapper rounded-lg shadow-md">
         <Table className="min-w-full table-fixed text-base text-dark-400 dark:text-light-200 bg-transparent">
           <TableHeader>
@@ -44,7 +46,7 @@ export default React.memo(function DrinkTable({
               <TableHead className="px-4 py-3 text-center text-orange-400">
                 Avatar
               </TableHead>
-              <TableHead className="px-4 py-3 text-left text-orange-400 font-bold">
+              <TableHead className="px-4 py-3 text-left   text-orange-400 font-bold">
                 Name
               </TableHead>
               <TableHead className="px-4 py-3 text-center text-orange-400">
@@ -58,17 +60,8 @@ export default React.memo(function DrinkTable({
               </TableHead>
             </TableRow>
           </TableHeader>
+
           <TableBody>
-            {users.length === 0 && (
-              <TableRow>
-                <TableCell
-                  colSpan={5}
-                  className="py-4 text-center text-gray-500 dark:text-gray-400 bg-transparent"
-                >
-                  Keine Nutzer gefunden.
-                </TableCell>
-              </TableRow>
-            )}
             {users.map((u, idx) => {
               const isMe = u.id === meId;
               return (
@@ -112,7 +105,6 @@ export default React.memo(function DrinkTable({
 
                   {/* Actions */}
                   <TableCell className="px-4 py-3 flex justify-center gap-2 bg-transparent">
-                    {/* +1 nur für Admin */}
                     {isAdmin && (
                       <Button
                         size="sm"
@@ -130,8 +122,6 @@ export default React.memo(function DrinkTable({
                         +1
                       </Button>
                     )}
-
-                    {/* -1 für Admin oder für dich selbst */}
                     {(isAdmin || isMe) && (
                       <Button
                         size="sm"
