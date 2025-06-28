@@ -36,7 +36,7 @@ export default React.memo(function DrinkTable({
   const isAdmin = me?.role === "ADMIN";
 
   return (
-    <div className="w-full px-2 md:px-4 lg:px-8 py-4">
+    <div className="w-full px-2 md:px-4 lg:px-8 py-4 components/home/Hero.tsx">
       <div className="overflow-x-auto card-wrapper rounded-lg shadow-md">
         <Table className="min-w-full table-fixed text-base text-dark-400 dark:text-light-200 bg-transparent">
           <TableHeader>
