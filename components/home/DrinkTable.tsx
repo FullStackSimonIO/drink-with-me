@@ -14,6 +14,7 @@ import {
 } from "../ui/table";
 import { Button } from "../ui/button";
 import type { Role } from "@prisma/client";
+import { toast } from "sonner";
 
 export type UserType = {
   id: string;
@@ -154,7 +155,7 @@ export default React.memo(function DrinkTable({
                             router.refresh();
                           }}
                         >
-                          <Plus className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                          <Plus className="w-4 h-4 text-orange-400 dark:text-orange-400" />
                         </Button>
                       )}
 
@@ -169,9 +170,17 @@ export default React.memo(function DrinkTable({
                               method: "POST",
                             });
                             router.refresh();
+                            toast("🍻 Prost!", {
+                              description:
+                                "Dein Bier wurde gezählt und dein Guthaben aktualisiert.",
+                              action: {
+                                label: "Undo",
+                                onClick: () => console.log("Undo"),
+                              },
+                            });
                           }}
                         >
-                          <Beer className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                          <Beer className="w-4 h-4 text-orange-400 dark:text-orange-400" />
                         </Button>
                       )}
                     </div>

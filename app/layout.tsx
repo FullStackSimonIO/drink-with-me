@@ -8,6 +8,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/context/ThemeProvider";
 import Navbar from "@/components/shared/navbar/Navbar";
 import { prisma } from "./lib/prisma";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: "Suff Bier",
@@ -43,6 +44,8 @@ export default async function RootLayout({
         >
           <ThemeProvider>
             <Navbar />
+            <Toaster />
+
             {children}
           </ThemeProvider>
         </ClerkProvider>
