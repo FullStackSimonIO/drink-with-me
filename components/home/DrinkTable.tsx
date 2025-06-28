@@ -1,7 +1,7 @@
-// components/DrinkTable.tsx
+// components/home/DrinkTable.tsx
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -11,16 +11,46 @@ import {
   TableRow,
 } from "../ui/table";
 import { Button } from "../ui/button";
-import { User, useUsers } from "@/app/lib/hooks/useUsers";
-import useSWR from "swr";
+
+type UserType = {
+  id: string;
+  name: string;
+  balance: number;
+  currScore: number;
+};
 
 export default function DrinkTable() {
-  const { users, isLoading, error } = useUsers();
-  const { mutate } = useSWR("/api/users");
+  const [users, setUsers] = useState<UserType[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  if (isLoading) return <p>Loading…</p>;
-  if (error) return <p>Fehler beim Laden</p>;
-  if (!users?.length) return <p>Keine Nutzer gefunden</p>;
+  // zentrale Funktion zum Laden der Daten
+  async function fetchUsers() {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/users", {
+        cache: "no-store", // immer frisch vom Server
+        credentials: "include", // falls Auth-Cookies nötig
+      });
+      if (!res.ok) throw new Error(res.statusText);
+      const data: UserType[] = await res.json();
+      setUsers(data);
+    } catch (err: any) {
+      setError(err.message || "Fehler beim Laden");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // beim ersten Mount laden
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  if (loading) return <p>Loading…</p>;
+  if (error) return <p>Error: {error}</p>;
+  if (users.length === 0) return <p>Keine Nutzer gefunden.</p>;
 
   return (
     <div>
@@ -29,39 +59,41 @@ export default function DrinkTable() {
           <TableRow>
             <TableHead>Name</TableHead>
             <TableHead>Balance</TableHead>
-            <TableHead>Curr Score</TableHead>
+            <TableHead>Akt. Score</TableHead>
             <TableHead>Aktion</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {users.map((user: User) => (
-            <TableRow key={user.id}>
-              <TableCell>{user.name}</TableCell>
-              <TableCell>{user.balance}</TableCell>
-              <TableCell>{user.currScore}</TableCell>
-              <TableCell>
+          {users.map((u) => (
+            <TableRow key={u.id}>
+              <TableCell>{u.name}</TableCell>
+              <TableCell>{u.balance}</TableCell>
+              <TableCell>{u.currScore}</TableCell>
+              <TableCell className="space-x-2">
                 <Button
+                  size="sm"
                   onClick={async () => {
-                    await fetch(`/api/users/${user.id}/balance`, {
+                    // +1
+                    await fetch(`/api/users/${u.id}/balance`, {
                       method: "PATCH",
                       headers: { "Content-Type": "application/json" },
                       body: JSON.stringify({ delta: +1 }),
                     });
-                    mutate(); // Refetch the users list
+                    await fetchUsers(); // Daten neu holen
                   }}
                 >
                   +1 Bier
                 </Button>
-              </TableCell>
-              <TableCell>
                 <Button
+                  size="sm"
                   onClick={async () => {
-                    await fetch(`/api/users/${user.id}/balance`, {
+                    // -1
+                    await fetch(`/api/users/${u.id}/balance`, {
                       method: "PATCH",
                       headers: { "Content-Type": "application/json" },
                       body: JSON.stringify({ delta: -1 }),
                     });
-                    mutate();
+                    await fetchUsers(); // Daten neu holen
                   }}
                 >
                   –1 Bier

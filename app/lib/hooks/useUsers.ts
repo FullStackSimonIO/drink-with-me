@@ -1,4 +1,3 @@
-// lib/hooks/useUsers.ts
 import useSWR from "swr";
 
 export type User = {
@@ -8,25 +7,16 @@ export type User = {
   currScore: number;
 };
 
-export function useUsers() {
-  interface UseUsersResult {
-    users: User[] | undefined;
-    error: any;
-    isLoading: boolean;
-  }
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
-  const {
-    data,
-    error,
-    isLoading,
-  }: {
-    data: User[] | undefined;
-    error: any;
-    isLoading: boolean;
-  } = useSWR<User[]>(
+export function useUsers() {
+  const { data, error, isLoading, mutate } = useSWR<User[]>(
     "/api/users",
-    (url: string): Promise<User[]> =>
-      fetch(url).then((res: Response) => res.json())
+    fetcher,
+    {
+      refreshInterval: 5000, // optional: alle 5 Sekunden automatisch refetchen
+      revalidateOnFocus: true, // optional: wenn der Tab in den Vordergrund kommt
+    }
   );
-  return { users: data, error, isLoading };
+  return { users: data, error, isLoading, mutate };
 }
