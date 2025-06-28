@@ -36,7 +36,7 @@ const Hero = () => {
 
   return (
     <div>
-      <section className="relative flex flex-col items-center justify-center w-full h-screen background-light800_dark300">
+      <section className="relative flex flex-col items-center justify-center w-full h-auto background-light800_dark300">
         {/* Left Side: Header + Text */}
         <div className="grid max-w-screen-xl px-6 py-12 mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-12">
           <div className="place-self-center lg:col-span-7">
