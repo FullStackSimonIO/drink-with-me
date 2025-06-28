@@ -1,6 +1,7 @@
 "use client";
 import { Chart } from "@/components/home/CurrMonthlyTable";
 import { BeerDataTable } from "@/components/home/DataTable";
+import DrinkTable from "@/components/home/DrinkTable";
 import Hero from "@/components/home/Hero";
 
 import Navbar from "@/components/shared/navbar/Navbar";
@@ -20,7 +21,7 @@ const Page = () => {
     <div>
       <Hero />
       <BeerDataTable data={[]} />
-
+      <DrinkTable />
       <Chart />
     </div>
   );

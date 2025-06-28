@@ -1,47 +1,51 @@
-import React from "react";
+// components/DrinkTable.tsx
+"use client";
 
+import React from "react";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "../ui/table";
 import { Button } from "../ui/button";
+import { User, useUsers } from "@/app/lib/hooks/useUsers";
 
-type User = {
-  name: string;
-  currCount: number;
-};
+export default function DrinkTable() {
+  const { users, isLoading, error } = useUsers();
 
-type Props = {
-  users: User[];
-};
+  if (isLoading) return <p>Loading…</p>;
+  if (error) return <p>Fehler beim Laden</p>;
+  if (!users?.length) return <p>Keine Nutzer gefunden</p>;
 
-const DrinkTable = ({ users }: Props) => {
   return (
     <div>
       <Table>
         <TableHeader>
           <TableRow>
             <TableHead>Name</TableHead>
-            <TableHead>Aktuell:</TableHead>
-            <TableHead>Hinzufügen:</TableHead>
-            <TableHead>Entfernen:</TableHead>
+            <TableHead>Balance</TableHead>
+            <TableHead>Curr Score</TableHead>
+            <TableHead>Aktion</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {users.map((user, index) => (
-            <TableRow key={index}>
-              <TableCell>user.name</TableCell>
-              <TableCell>user.currCount</TableCell>
+          {users.map((user: User) => (
+            <TableRow key={user.id}>
+              <TableCell>{user.name}</TableCell>
+              <TableCell>{user.balance}</TableCell>
+              <TableCell>{user.currScore}</TableCell>
               <TableCell>
-                <Button>Bier trinken</Button>
-              </TableCell>
-              <TableCell>
-                <Button>Bier zahlen</Button>
+                <Button
+                  size="sm"
+                  onClick={(): void => {
+                    /* hier könntest du z.B. POST /api/users/[id]/drink aufrufen */
+                  }}
+                >
+                  +1 Bier
+                </Button>
               </TableCell>
             </TableRow>
           ))}
@@ -49,6 +53,4 @@ const DrinkTable = ({ users }: Props) => {
       </Table>
     </div>
   );
-};
-
-export default DrinkTable;
+}

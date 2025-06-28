@@ -24,7 +24,7 @@ export function ProfileCard() {
   if (!isSignedIn || !profile) {
     return <p>Bitte melde dich an, um dein Profil zu sehen.</p>;
   }
-  console.log("ProfileCard mounted, hook:", { isLoaded, isSignedIn, profile });
+  //console.log("ProfileCard mounted, hook:", { isLoaded, isSignedIn, profile });
 
   return (
     <Card className="max-w-sm mx-auto bg-black">

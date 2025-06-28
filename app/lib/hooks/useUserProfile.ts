@@ -16,22 +16,24 @@ export function useUserProfile() {
   const [loadingProfile, setLoadingProfile] = useState(false);
 
   useEffect(() => {
-    if (!isLoaded || !isSignedIn || !user) return;
-
+    if (!isLoaded || !isSignedIn) return;
     setLoadingProfile(true);
+
     fetch("/api/profile", {
-      credentials: "include", // <-- hier die entscheidende Zeile
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
+      credentials: "include",
     })
       .then(async (res) => {
-        if (!res.ok) throw new Error("Unauthorized");
+        console.log("profile fetch status:", res.status);
+        if (!res.ok) throw new Error(`Status ${res.status}`);
         return res.json();
       })
-      .then((data: UserProfile) => setProfile(data))
-      .catch(() => setProfile(null))
+      .then(setProfile)
+      .catch((err) => {
+        console.error("profile fetch error:", err);
+        setProfile(null);
+      })
       .finally(() => setLoadingProfile(false));
-  }, [isLoaded, isSignedIn, user]);
+  }, [isLoaded, isSignedIn]);
 
   return { user, isLoaded, isSignedIn, profile, loadingProfile };
 }
