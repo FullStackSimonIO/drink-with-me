@@ -15,6 +15,7 @@ export async function POST(
     where: { id: userId },
     data: {
       currScore: { increment: 1 },
+      balance: { decrement: 1 },
     },
   });
 
