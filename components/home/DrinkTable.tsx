@@ -1,10 +1,9 @@
-// components/home/DrinkTable.tsx
 "use client";
 
 import React from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Plus, Minus } from "lucide-react"; // <-- Icons importieren
+import { Plus, Minus, Beer } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -43,24 +42,21 @@ export default React.memo(function DrinkTable({
         <Table className="min-w-full table-fixed text-base text-dark-400 dark:text-light-200 bg-transparent">
           <TableHeader>
             <TableRow className="bg-light-800 dark:bg-dark-400">
-              <TableHead className="px-4 py-3 text-center text-orange-400">
-                Avatar
+              <TableHead className="px-4 py-3 text-center text-orange-400"></TableHead>
+              <TableHead className="px-4 py-3 text-left text-orange-400 font-bold text-sm">
+                Name:
               </TableHead>
-              <TableHead className="px-4 py-3 text-left text-orange-400 font-bold">
-                Name
+              <TableHead className="px-4 py-3 text-center text-orange-400 font-bold text-sm">
+                Guthaben:
               </TableHead>
-              <TableHead className="px-4 py-3 text-center text-orange-400">
-                Guthaben
+              <TableHead className="px-4 py-3 text-center text-orange-400 font-bold text-sm">
+                Zähler:
               </TableHead>
-              <TableHead className="px-4 py-3 text-center text-orange-400">
-                Jährlicher Biercounter
-              </TableHead>
-              <TableHead className="px-4 py-3 text-center text-orange-400">
-                Aktion
+              <TableHead className="px-4 py-3 text-center text-orange-400 font-bold text-sm">
+                Aktion:
               </TableHead>
             </TableRow>
           </TableHeader>
-
           <TableBody>
             {users.map((u, idx) => {
               const isMe = u.id === meId;
@@ -104,44 +100,63 @@ export default React.memo(function DrinkTable({
                   </TableCell>
 
                   {/* Actions */}
-                  <TableCell className="px-4 py-3 text-center bg-transparent text-gray-600 dark:text-gray-400">
-                    {/* +1 nur für Admin */}
-                    {isAdmin && (
-                      <Button
-                        size="icon" // benutze icon-Button
-                        variant="secondary"
-                        className="p-2"
-                        onClick={async () => {
-                          await fetch(`/api/users/${u.id}/balance`, {
-                            method: "PATCH",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({ delta: +1 }),
-                          });
-                          router.refresh();
-                        }}
-                      >
-                        <Plus className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-                      </Button>
-                    )}
+                  <TableCell className="px-4 py-3 bg-transparent">
+                    <div className="flex items-center justify-center gap-2">
+                      {/* +1 Balance nur Admin */}
+                      {isAdmin && (
+                        <Button
+                          size="icon"
+                          variant="secondary"
+                          className="p-2"
+                          onClick={async () => {
+                            await fetch(`/api/users/${u.id}/balance`, {
+                              method: "PATCH",
+                              headers: { "Content-Type": "application/json" },
+                              body: JSON.stringify({ delta: +1 }),
+                            });
+                            router.refresh();
+                          }}
+                        >
+                          <Plus className="w-4 h-4" />
+                        </Button>
+                      )}
 
-                    {/* -1 für Admin oder für dich selbst */}
-                    {(isAdmin || isMe) && (
-                      <Button
-                        size="icon"
-                        variant="secondary"
-                        className="p-2"
-                        onClick={async () => {
-                          await fetch(`/api/users/${u.id}/balance`, {
-                            method: "PATCH",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({ delta: -1 }),
-                          });
-                          router.refresh();
-                        }}
-                      >
-                        <Minus className="w-4 h-4 " />
-                      </Button>
-                    )}
+                      {/* Bier Trinken: nur Du selbst oder Admin */}
+                      {(isAdmin || isMe) && (
+                        <Button
+                          size="icon"
+                          variant="secondary"
+                          className="p-2"
+                          onClick={async () => {
+                            await fetch(`/api/users/${u.id}/drink`, {
+                              method: "POST",
+                            });
+                            router.refresh();
+                          }}
+                        >
+                          <Beer className="w-4 h-4" />
+                        </Button>
+                      )}
+
+                      {/* –1 Balance nur Admin */}
+                      {isAdmin && (
+                        <Button
+                          size="icon"
+                          variant="secondary"
+                          className="p-2"
+                          onClick={async () => {
+                            await fetch(`/api/users/${u.id}/balance`, {
+                              method: "PATCH",
+                              headers: { "Content-Type": "application/json" },
+                              body: JSON.stringify({ delta: -1 }),
+                            });
+                            router.refresh();
+                          }}
+                        >
+                          <Minus className="w-4 h-4" />
+                        </Button>
+                      )}
+                    </div>
                   </TableCell>
                 </TableRow>
               );
