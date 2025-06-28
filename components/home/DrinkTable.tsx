@@ -1,7 +1,8 @@
 // components/home/DrinkTable.tsx
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { useRouter } from "next/navigation";
 import {
   Table,
   TableBody,
@@ -12,44 +13,12 @@ import {
 } from "../ui/table";
 import { Button } from "../ui/button";
 
-type UserType = {
-  id: string;
-  name: string;
-  balance: number;
-  currScore: number;
-};
-
-export default function DrinkTable() {
-  const [users, setUsers] = useState<UserType[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  // 1) zentrale Fetch-Funktion
-  async function fetchUsers() {
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await fetch("/api/users", {
-        cache: "no-store", // kein Cache, immer live
-      });
-      if (!res.ok) throw new Error(`Status ${res.status}`);
-      setUsers(await res.json());
-    } catch (err: any) {
-      setError(err.message || "Unbekannter Fehler");
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  // 2) onMount + Polling alle 5s
-  useEffect(() => {
-    fetchUsers(); // sofort beim Mount
-    const interval = setInterval(fetchUsers, 5000);
-    return () => clearInterval(interval);
-  }, []);
-
-  if (loading) return <p>Loading…</p>;
-  if (error) return <p style={{ color: "red" }}>{error}</p>;
+export default function DrinkTable({
+  users,
+}: {
+  users: { id: string; name: string; balance: number; currScore: number }[];
+}) {
+  const router = useRouter();
 
   return (
     <div>
@@ -63,13 +32,6 @@ export default function DrinkTable() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {users.length === 0 && (
-            <TableRow>
-              <TableCell colSpan={4} className="text-center">
-                Keine Nutzer gefunden.
-              </TableCell>
-            </TableRow>
-          )}
           {users.map((u) => (
             <TableRow key={u.id}>
               <TableCell>{u.name}</TableCell>
@@ -84,7 +46,7 @@ export default function DrinkTable() {
                       headers: { "Content-Type": "application/json" },
                       body: JSON.stringify({ delta: +1 }),
                     });
-                    await fetchUsers(); // sofort neu ziehen
+                    router.refresh(); // ← hier erzwingst du das Neuladen aller Server-Props
                   }}
                 >
                   +1 Bier
@@ -97,7 +59,7 @@ export default function DrinkTable() {
                       headers: { "Content-Type": "application/json" },
                       body: JSON.stringify({ delta: -1 }),
                     });
-                    await fetchUsers();
+                    router.refresh();
                   }}
                 >
                   –1 Bier

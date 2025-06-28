@@ -1,30 +1,20 @@
-"use client";
-import { Chart } from "@/components/home/CurrMonthlyTable";
-import { BeerDataTable } from "@/components/home/DataTable";
+// app/page.tsx
 import DrinkTable from "@/components/home/DrinkTable";
 import Hero from "@/components/home/Hero";
+import { prisma } from "../lib/prisma";
 
-import Navbar from "@/components/shared/navbar/Navbar";
-import { useUser } from "@clerk/nextjs";
-import React, { useEffect } from "react";
+export const dynamic = "force-dynamic"; // sicherstellen, dass immer server-seitig neu gerendert wird
 
-const Page = () => {
-  const { isLoaded, isSignedIn, user } = useUser();
-
-  useEffect(() => {
-    if (isLoaded && isSignedIn && user) {
-      fetch("/api/profile/sync", { method: "POST" }).catch(console.error);
-    }
-  }, [isLoaded, isSignedIn, user]);
+export default async function Page() {
+  const users = await prisma.user.findMany({
+    orderBy: { name: "asc" },
+    select: { id: true, name: true, balance: true, currScore: true },
+  });
 
   return (
-    <div>
+    <main className="p-4">
       <Hero />
-      <BeerDataTable data={[]} />
-      <DrinkTable />
-      <Chart />
-    </div>
+      <DrinkTable users={users} />
+    </main>
   );
-};
-
-export default Page;
+}
