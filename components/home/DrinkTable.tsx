@@ -12,9 +12,11 @@ import {
 } from "../ui/table";
 import { Button } from "../ui/button";
 import { User, useUsers } from "@/app/lib/hooks/useUsers";
+import useSWR from "swr";
 
 export default function DrinkTable() {
   const { users, isLoading, error } = useUsers();
+  const { mutate } = useSWR("/api/users");
 
   if (isLoading) return <p>Loading…</p>;
   if (error) return <p>Fehler beim Laden</p>;
@@ -39,12 +41,30 @@ export default function DrinkTable() {
               <TableCell>{user.currScore}</TableCell>
               <TableCell>
                 <Button
-                  size="sm"
-                  onClick={(): void => {
-                    /* hier könntest du z.B. POST /api/users/[id]/drink aufrufen */
+                  onClick={async () => {
+                    await fetch(`/api/users/${user.id}/balance`, {
+                      method: "PATCH",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ delta: +1 }),
+                    });
+                    mutate(); // Refetch the users list
                   }}
                 >
                   +1 Bier
+                </Button>
+              </TableCell>
+              <TableCell>
+                <Button
+                  onClick={async () => {
+                    await fetch(`/api/users/${user.id}/balance`, {
+                      method: "PATCH",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ delta: -1 }),
+                    });
+                    mutate();
+                  }}
+                >
+                  –1 Bier
                 </Button>
               </TableCell>
             </TableRow>
