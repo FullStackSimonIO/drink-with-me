@@ -9,7 +9,7 @@ import { ThemeProvider } from "@/context/ThemeProvider";
 import Navbar from "@/components/shared/navbar/Navbar";
 
 export const metadata: Metadata = {
-  title: "DevFlow",
+  title: "Suff Bier",
   description:
     "A community-driven platform for asking and answering programming questions. Get help, share knowledge, and collaborate with developers from around the world. Explore topics in web development, mobile app development, algorithms, data structures, and more.",
   icons: {
@@ -17,11 +17,20 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export const dynamic = "force-dynamic";
+
+// optional: ganz explizit kein Cache
+export const fetchCache = "default-no-store";
+
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const res = await fetch("https://suff.beer/api/users", {
+    cache: "no-store", // direkt beim Fetch kein Caching
+  });
+  const users = await res.json();
   return (
     <html lang="en">
       <body>
