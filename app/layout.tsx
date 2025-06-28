@@ -32,7 +32,7 @@ export default async function RootLayout({
 
   return (
     <html lang="de">
-      <body>
+      <body className="background-light800_dark300">
         <ClerkProvider
           appearance={{
             elements: {
