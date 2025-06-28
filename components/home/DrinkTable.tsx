@@ -24,33 +24,32 @@ export default function DrinkTable() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // zentrale Funktion zum Laden der Daten
+  // 1) zentrale Fetch-Funktion
   async function fetchUsers() {
     setLoading(true);
     setError(null);
     try {
       const res = await fetch("/api/users", {
-        cache: "no-store", // immer frisch vom Server
-        credentials: "include", // falls Auth-Cookies nötig
+        cache: "no-store", // kein Cache, immer live
       });
-      if (!res.ok) throw new Error(res.statusText);
-      const data: UserType[] = await res.json();
-      setUsers(data);
+      if (!res.ok) throw new Error(`Status ${res.status}`);
+      setUsers(await res.json());
     } catch (err: any) {
-      setError(err.message || "Fehler beim Laden");
+      setError(err.message || "Unbekannter Fehler");
     } finally {
       setLoading(false);
     }
   }
 
-  // beim ersten Mount laden
+  // 2) onMount + Polling alle 5s
   useEffect(() => {
-    fetchUsers();
+    fetchUsers(); // sofort beim Mount
+    const interval = setInterval(fetchUsers, 5000);
+    return () => clearInterval(interval);
   }, []);
 
   if (loading) return <p>Loading…</p>;
-  if (error) return <p>Error: {error}</p>;
-  if (users.length === 0) return <p>Keine Nutzer gefunden.</p>;
+  if (error) return <p style={{ color: "red" }}>{error}</p>;
 
   return (
     <div>
@@ -59,11 +58,18 @@ export default function DrinkTable() {
           <TableRow>
             <TableHead>Name</TableHead>
             <TableHead>Balance</TableHead>
-            <TableHead>Akt. Score</TableHead>
+            <TableHead>Aktueller Score</TableHead>
             <TableHead>Aktion</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
+          {users.length === 0 && (
+            <TableRow>
+              <TableCell colSpan={4} className="text-center">
+                Keine Nutzer gefunden.
+              </TableCell>
+            </TableRow>
+          )}
           {users.map((u) => (
             <TableRow key={u.id}>
               <TableCell>{u.name}</TableCell>
@@ -73,13 +79,12 @@ export default function DrinkTable() {
                 <Button
                   size="sm"
                   onClick={async () => {
-                    // +1
                     await fetch(`/api/users/${u.id}/balance`, {
                       method: "PATCH",
                       headers: { "Content-Type": "application/json" },
                       body: JSON.stringify({ delta: +1 }),
                     });
-                    await fetchUsers(); // Daten neu holen
+                    await fetchUsers(); // sofort neu ziehen
                   }}
                 >
                   +1 Bier
@@ -87,13 +92,12 @@ export default function DrinkTable() {
                 <Button
                   size="sm"
                   onClick={async () => {
-                    // -1
                     await fetch(`/api/users/${u.id}/balance`, {
                       method: "PATCH",
                       headers: { "Content-Type": "application/json" },
                       body: JSON.stringify({ delta: -1 }),
                     });
-                    await fetchUsers(); // Daten neu holen
+                    await fetchUsers();
                   }}
                 >
                   –1 Bier
