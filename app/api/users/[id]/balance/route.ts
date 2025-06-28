@@ -1,32 +1,35 @@
 // app/api/users/[id]/balance/route.ts
-import { prisma } from "@/app/lib/prisma";
 import { NextResponse } from "next/server";
 
+import { auth } from "@clerk/nextjs/server";
+import { prisma } from "@/app/lib/prisma";
+
+// Querparameter ist jetzt direkt dein Prisma-User.id (cuid)
 export async function PATCH(
   req: Request,
   { params }: { params: { id: string } }
 ) {
-  // 1) Benutzer-ID aus der URL
-  const userId = params.id;
+  const { userId } = auth();
+  if (!userId) return new NextResponse("Unauthorized", { status: 401 });
 
-  // 2) JSON-Body mit { delta: number }
-  const { delta } = (await req.json()) as { delta?: number };
-  if (typeof delta !== "number") {
-    return new NextResponse("Bad Request: delta fehlt oder ist kein Number", {
-      status: 400,
-    });
+  // Wenn du nicht clerkUserId abgleichen willst, sondern direkt mit params.id,
+  // prüfst du einfach, ob params.id === me.id
+  const me = await prisma.user.findUnique({
+    where: { id: params.id },
+    select: { id: true, role: true },
+  });
+  if (!me) return new NextResponse("Not Found", { status: 404 });
+
+  const { delta } = await req.json();
+  // Nur erlauben, wenn eigener Datensatz UND delta = -1, oder Admin
+  if (me.role === "USER" && delta !== -1) {
+    return new NextResponse("Forbidden", { status: 403 });
   }
 
-  try {
-    // 3) Update in der DB: beerBalance um delta inkrementieren
-    const updatedUser = await prisma.user.update({
-      where: { id: userId },
-      data: { balance: { increment: delta } },
-      select: { id: true, name: true, balance: true, currScore: true },
-    });
-    return NextResponse.json(updatedUser);
-  } catch (err) {
-    // 4) Fehler-Handling, z.B. wenn user nicht existiert
-    return new NextResponse("User nicht gefunden", { status: 404 });
-  }
+  const updated = await prisma.user.update({
+    where: { id: params.id },
+    data: { balance: { increment: delta } },
+  });
+
+  return NextResponse.json(updated);
 }
