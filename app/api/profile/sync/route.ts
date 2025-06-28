@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { prisma } from "@/app/lib/prisma";
 
-export const runtime = "node";
+export const runtime = "nodejs";
 
 export async function POST(req: Request) {
   // 1) Auth-Check
