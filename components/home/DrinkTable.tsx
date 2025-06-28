@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useMemo } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Plus, Minus, Beer } from "lucide-react";
@@ -36,8 +36,45 @@ export default React.memo(function DrinkTable({
   const meId = me?.id;
   const isAdmin = me?.role === "ADMIN";
 
+  // Sort-Key State
+  const [sortKey, setSortKey] = useState<"currScore" | "balance" | "name">(
+    "currScore"
+  );
+
+  // Memoized sorted array
+  const sortedUsers = useMemo(() => {
+    const arr = [...users];
+    switch (sortKey) {
+      case "name":
+        return arr.sort((a, b) => a.name.localeCompare(b.name));
+      case "balance":
+        return arr.sort((a, b) => b.balance - a.balance);
+      case "currScore":
+      default:
+        return arr.sort((a, b) => b.currScore - a.currScore);
+    }
+  }, [users, sortKey]);
+
   return (
     <div className="w-full px-2 md:px-4 lg:px-8 py-4">
+      {/* Sortier-Auswahl */}
+      <div className="flex justify-end pb-2">
+        <label className="flex items-center space-x-2 text-gray-600 dark:text-gray-200">
+          <span>Sortieren:</span>
+          <select
+            value={sortKey}
+            onChange={(e) =>
+              setSortKey(e.target.value as "currScore" | "balance" | "name")
+            }
+            className="bg-light-800 dark:bg-dark-400 text-sm p-1 rounded"
+          >
+            <option value="currScore">Zähler (absteigend)</option>
+            <option value="balance">Guthaben (absteigend)</option>
+            <option value="name">Name (A–Z)</option>
+          </select>
+        </label>
+      </div>
+
       <div className="overflow-x-auto card-wrapper rounded-lg shadow-md">
         <Table className="min-w-full table-fixed text-base text-dark-400 dark:text-light-200 bg-transparent">
           <TableHeader>
@@ -58,7 +95,7 @@ export default React.memo(function DrinkTable({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {users.map((u, idx) => {
+            {sortedUsers.map((u, idx) => {
               const isMe = u.id === meId;
               return (
                 <TableRow
@@ -117,11 +154,11 @@ export default React.memo(function DrinkTable({
                             router.refresh();
                           }}
                         >
-                          <Plus className="w-4 h-4" />
+                          <Plus className="w-4 h-4 text-gray-600 dark:text-gray-400" />
                         </Button>
                       )}
 
-                      {/* Bier Trinken: nur Du selbst oder Admin */}
+                      {/* Bier trinken / Zähler hoch */}
                       {(isAdmin || isMe) && (
                         <Button
                           size="icon"
@@ -134,7 +171,26 @@ export default React.memo(function DrinkTable({
                             router.refresh();
                           }}
                         >
-                          <Beer className="w-4 h-4" />
+                          <Beer className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                        </Button>
+                      )}
+
+                      {/* –1 Balance nur Admin */}
+                      {isAdmin && (
+                        <Button
+                          size="icon"
+                          variant="secondary"
+                          className="p-2"
+                          onClick={async () => {
+                            await fetch(`/api/users/${u.id}/balance`, {
+                              method: "PATCH",
+                              headers: { "Content-Type": "application/json" },
+                              body: JSON.stringify({ delta: -1 }),
+                            });
+                            router.refresh();
+                          }}
+                        >
+                          <Minus className="w-4 h-4 text-gray-600 dark:text-gray-400" />
                         </Button>
                       )}
                     </div>
