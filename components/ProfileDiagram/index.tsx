@@ -102,16 +102,12 @@ export function ProfileMonthlyChart({ userId }: { userId: string }) {
                 tick={{ fill: "#94a3b8", fontSize: 12 }}
                 width={30}
               />
-              <ChartTooltip
-                content={
-                  <ChartTooltipContent indicator="line" className="!p-2" />
-                }
-              />
+
               <Area
                 type="monotone"
                 dataKey="count"
                 stroke="var(--chart-2)"
-                fill="var(--chart-2)"
+                fill="#ff7000"
                 fillOpacity={0.3}
                 strokeWidth={2}
               />

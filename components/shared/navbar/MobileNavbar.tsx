@@ -71,12 +71,7 @@ const MobileNav = () => {
         className="background-light900_dark200 border-none overflow-y-auto no-scrollbar"
       >
         <Link href="/" className="flex items-center gap-1">
-          <Image
-            src="/assets/images/site-logo.svg"
-            width={23}
-            height={23}
-            alt="DevFlow"
-          />
+          <Image src="/assets/beer.png" width={23} height={23} alt="DevFlow" />
 
           <p className="h2-bold text-dark100_light900 font-spaceGrotesk">
             Party <span className="text-primary-500">Keller</span>

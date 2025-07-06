@@ -36,17 +36,19 @@ export function ProfileCard({ user }: { user: Me }) {
             className="rounded-full object-cover"
           />
         ) : (
-          <div className="w-full h-full bg-gray-600 rounded-full" />
+          <div className="w-full h-full  rounded-full" />
         )}
       </div>
-      <h2 className="text-2xl font-semibold text-white mb-1">{user.name}</h2>
+      <h2 className="text-2xl font-semibold text-primary-500 mb-1">
+        {user.name}
+      </h2>
       <dl className="space-y-2 text-gray-200">
         <div>
           <dt className="inline font-medium">Kontostand:</dt>{" "}
           <dd className="inline">{user.balance} €</dd>
         </div>
         <div>
-          <dt className="inline font-medium">Biere dieses Jahr:</dt>{" "}
+          <dt className="inline font-medium">Bier dieses Jahr:</dt>{" "}
           <dd className="inline">{user.currScore}</dd>
         </div>
       </dl>
@@ -63,7 +65,10 @@ export function ProfileCard({ user }: { user: Me }) {
               className="w-full rounded-lg border border-gray-500 bg-transparent px-4 py-2 text-white focus:ring-2 focus:ring-orange-400"
             />
           </label>
-          <Button className="w-full" onClick={addFreeBeer}>
+          <Button
+            className="px-6 py-4 text-[#161821] bg-primary-500 rounded-lg font-bold hover:-translate-y-1 transition"
+            onClick={addFreeBeer}
+          >
             Freibier hinzufügen
           </Button>
         </div>

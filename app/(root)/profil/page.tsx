@@ -32,7 +32,7 @@ export default async function ProfilePage() {
   }
 
   return (
-    <main className="min-h-screen py-8 bg-light-800 dark:bg-dark-300 flex justify-center items-center">
+    <main className="min-h-screen py-24 flex justify-center items-center">
       {/* Wir reduzieren die max-Breite, damit es nicht zu viel Rand gibt */}
       <div className="w-full max-w-4xl grid gap-6 grid-cols-1 md:grid-cols-2">
         {/* Profil-Karte (1/2 Breite ab md aufwärts) */}
