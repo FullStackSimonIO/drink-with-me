@@ -15,14 +15,15 @@ enum Role {
 }
 
 model User {
-  id           String   @id @default(cuid())
-  clerkUserId  String?  @unique
+  id           String    @id @default(cuid())
+  clerkUserId  String?   @unique
   name         String
   profileImage String?
-  currScore    Int      @default(0)
-  balance      Int      @default(0)
-  createdAt    DateTime @default(now())
-  role         Role     @default(USER)
+  currScore    Int       @default(0)
+  balance      Int       @default(0)
+  createdAt    DateTime  @default(now())
+  role         Role      @default(USER)
+  lastActive   DateTime? // ← hier
   Drink        Drink[]
 }
 
