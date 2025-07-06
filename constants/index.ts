@@ -14,12 +14,12 @@ export const sidebarLinks: SidebarLink[] = [
   },
   {
     imgURL: "/assets/icons/users.svg",
-    route: "/saeufer",
-    label: "Säufer",
+    route: "/bier-casino",
+    label: "Bier Casino",
   },
   {
     imgURL: "/assets/icons/star.svg",
-    route: "/profile",
+    route: "/profil",
     label: "Profile",
   },
 ];
