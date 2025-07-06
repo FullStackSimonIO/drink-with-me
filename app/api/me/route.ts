@@ -18,6 +18,8 @@ export async function GET() {
       profileImage: true,
       balance: true,
       currScore: true,
+      tokens: true, // ← neu
+      purchaseProgress: true, // ← optional
     },
   });
   if (!me) return new NextResponse("Not Found", { status: 404 });

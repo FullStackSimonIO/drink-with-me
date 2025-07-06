@@ -34,6 +34,7 @@
     "node-fetch": "^3.3.2",
     "pg": "^8.12.0",
     "react": "^18",
+    "react-custom-roulette": "^1.4.1",
     "react-dom": "^18",
     "recharts": "^2.12.7",
     "sonner": "^2.0.5",

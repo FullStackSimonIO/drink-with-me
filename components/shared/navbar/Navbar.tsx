@@ -37,18 +37,12 @@ const Navbar = () => {
       </Link>
 
       <Link
-        href="/biertracker"
+        href="/bier-casino"
         className="hidden lg:flex items-center gap-2 text-dark-100 dark:text-white hover:text-primary-500 dark:hover:text-primary-500 text-lg font-bold"
       >
-        Biertracker
+        Bier-Casino
       </Link>
 
-      <Link
-        href="/vorrat"
-        className="hidden lg:flex items-center gap-2 text-dark-100 dark:text-white hover:text-primary-500 dark:hover:text-primary-500  text-lg font-bold"
-      >
-        Vorrat
-      </Link>
       <Link
         href="/profil"
         className="hidden lg:flex items-center gap-2 text-dark-100 dark:text-white hover:text-primary-500 dark:hover:text-primary-500 text-lg font-bold"

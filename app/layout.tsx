@@ -9,6 +9,7 @@ import { ThemeProvider } from "@/context/ThemeProvider";
 import Navbar from "@/components/shared/navbar/Navbar";
 import { prisma } from "./lib/prisma";
 import { Toaster } from "@/components/ui/sonner";
+import { OnlineAlert } from "@/components/OnlineAlert";
 
 export const metadata: Metadata = {
   title: "Promillecrew - Dashboard",
@@ -43,6 +44,7 @@ export default async function RootLayout({
           }}
         >
           <ThemeProvider>
+            <OnlineAlert />
             <Navbar />
             <Toaster />
 

@@ -1,4 +1,3 @@
-// app/api/users/[id]/balance/route.ts
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/app/lib/prisma";
@@ -9,41 +8,54 @@ export async function PATCH(
   req: Request,
   { params }: { params: { id: string } }
 ) {
-  // 1) Auth
-  const { userId } = auth();
-  if (!userId) return new NextResponse("Unauthorized", { status: 401 });
+  const { userId: clerkId } = auth();
+  if (!clerkId) return new NextResponse("Unauthorized", { status: 401 });
 
-  // 2) Lade den aufrufenden User (me)
-  const me = await prisma.user.findUnique({
-    where: { clerkUserId: userId },
-    select: { id: true, role: true },
-  });
-  if (!me) return new NextResponse("User not found", { status: 404 });
-
-  // 3) Body & delta prüfen
-  const { delta } = (await req.json()) as { delta?: number };
+  const { delta } = (await req.json()) as { delta: number };
   if (typeof delta !== "number") {
     return new NextResponse("Bad Request", { status: 400 });
   }
 
-  // 4) Authorization:
-  //    - USER darf nur für sich selbst delta = -1
-  //    - ADMIN darf alles
-  if (me.role === "USER") {
-    if (delta !== -1 || params.id !== me.id) {
-      return new NextResponse("Forbidden", { status: 403 });
-    }
+  // Admin oder Self?
+  const me = await prisma.user.findUnique({
+    where: { clerkUserId: clerkId },
+    select: { id: true, role: true },
+  });
+  if (!me) return new NextResponse("User not found", { status: 404 });
+  if (me.role === "USER" && (delta < 0 || params.id !== me.id)) {
+    return new NextResponse("Forbidden", { status: 403 });
   }
 
-  // 5) Update
-  try {
-    const updated = await prisma.user.update({
+  // Transaktion: balance & token-Progress
+  const updated = await prisma.$transaction(async (tx) => {
+    const u = await tx.user.update({
       where: { id: params.id },
       data: { balance: { increment: delta } },
-      select: { id: true, balance: true, currScore: true },
+      select: { id: true, balance: true, tokens: true, purchaseProgress: true },
     });
-    return NextResponse.json(updated);
-  } catch {
-    return new NextResponse("User not found", { status: 404 });
-  }
+
+    if (delta > 0) {
+      let prog = u.purchaseProgress + delta;
+      const tokensToAdd = Math.floor(prog / 10);
+      prog = prog % 10;
+      if (tokensToAdd > 0) {
+        await tx.user.update({
+          where: { id: params.id },
+          data: {
+            tokens: { increment: tokensToAdd },
+            purchaseProgress: prog,
+          },
+        });
+      } else {
+        await tx.user.update({
+          where: { id: params.id },
+          data: { purchaseProgress: prog },
+        });
+      }
+    }
+
+    return u;
+  });
+
+  return NextResponse.json(updated);
 }

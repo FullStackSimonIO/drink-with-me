@@ -5,6 +5,7 @@ import { auth } from "@clerk/nextjs/server";
 import { clerkClient } from "@clerk/nextjs/server";
 import { prisma } from "../lib/prisma";
 import { OnlineUsers } from "@/components/OnlineUsers";
+import { BeerDataTable } from "@/components/home/DataTable";
 
 // Liste der Clerk-UserIDs, die Adminrechte haben sollen
 const ADMIN_IDS = (process.env.ADMIN_IDS || "").split(",");
@@ -72,7 +73,7 @@ export default async function Page() {
   return (
     <main className="pb-8">
       <Hero />
-      <OnlineUsers />
+
       <DrinkTable users={users} me={me} />
     </main>
   );

@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "User" ADD COLUMN     "purchaseProgress" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "tokens" INTEGER NOT NULL DEFAULT 0;

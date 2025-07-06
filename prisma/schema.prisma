@@ -8,26 +8,26 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Definiere eine Rolle
 enum Role {
   USER
   ADMIN
 }
 
 model User {
-  id           String    @id @default(cuid())
-  clerkUserId  String?   @unique
-  name         String
-  profileImage String?
-  currScore    Int       @default(0)
-  balance      Int       @default(0)
-  createdAt    DateTime  @default(now())
-  role         Role      @default(USER)
-  lastActive   DateTime? // ← hier
-  Drink        Drink[]
+  id               String    @id @default(cuid())
+  clerkUserId      String?   @unique
+  name             String
+  profileImage     String?
+  currScore        Int       @default(0)
+  balance          Int       @default(0)
+  tokens           Int       @default(0)
+  purchaseProgress Int       @default(0)
+  lastActive       DateTime? // ← hier
+  createdAt        DateTime  @default(now())
+  role             Role      @default(USER)
+  Drink            Drink[]
 }
 
-/// Ein einzelner Counter für Freibier
 model FreeBeer {
   id    String @id
   count Int    @default(0)
