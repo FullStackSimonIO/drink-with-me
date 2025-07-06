@@ -1,63 +1,73 @@
+// components/ProfileCard/index.tsx
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
+import { Button } from "../ui/button";
+import { toast } from "sonner";
+import { Me } from "@/app/lib/hooks/useMe";
 
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { useUserProfile } from "@/app/lib/hooks/useUserProfile";
+export function ProfileCard({ user }: { user: Me }) {
+  const [amt, setAmt] = useState(1);
+  const isAdmin = user.role === "ADMIN";
 
-export function ProfileCard() {
-  const { profile, isLoaded, isSignedIn, loadingProfile } = useUserProfile();
-
-  if (!isLoaded || loadingProfile) {
-    return <p>Profil wird geladen…</p>;
-  }
-
-  if (!isSignedIn || !profile) {
-    return <p>Bitte melde dich an, um dein Profil zu sehen.</p>;
-  }
-  //console.log("ProfileCard mounted, hook:", { isLoaded, isSignedIn, profile });
+  const addFreeBeer = async () => {
+    const res = await fetch("/api/freibier", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ delta: amt }),
+    });
+    if (res.ok) {
+      toast.success(`${amt} Freibier hinzugefügt! 🍺`);
+      // hier könntest du router.refresh() oder SWR mutate auf /api/me auslösen
+    } else {
+      toast.error("Fehler beim Hinzufügen von Freibier");
+    }
+  };
 
   return (
-    <Card className="max-w-sm mx-auto bg-black">
-      <CardHeader>
-        <CardTitle>Mein Profil</CardTitle>
-        <CardDescription>Übersicht deiner Informationen</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {profile.profileImage && (
-          <div className="w-24 h-24 rounded-full overflow-hidden mx-auto">
-            <Image
-              src={profile.profileImage}
-              alt="Profilbild"
-              width={96}
-              height={96}
-              className="object-cover"
-            />
-          </div>
+    <div className="glass-card flex flex-col items-center text-center">
+      <div className="relative w-24 h-24 mb-4">
+        {user.profileImage ? (
+          <Image
+            src={user.profileImage}
+            alt={user.name}
+            fill
+            className="rounded-full object-cover"
+          />
+        ) : (
+          <div className="w-full h-full bg-gray-600 rounded-full" />
         )}
+      </div>
+      <h2 className="text-2xl font-semibold text-white mb-1">{user.name}</h2>
+      <dl className="space-y-2 text-gray-200">
         <div>
-          <p className="font-semibold text-white">Name:</p>
-          <p className="text-white">{profile.name}</p>
+          <dt className="inline font-medium">Kontostand:</dt>{" "}
+          <dd className="inline">{user.balance} €</dd>
         </div>
         <div>
-          <p className="font-semibold text-white">Aktueller Score:</p>
-          <p className="text-white">{profile.currScore}</p>
+          <dt className="inline font-medium">Biere dieses Jahr:</dt>{" "}
+          <dd className="inline">{user.currScore}</dd>
         </div>
-      </CardContent>
-      <CardFooter>
-        <p className="text-sm text-muted-foreground">
-          Letzte Aktualisierung: gerade eben
-        </p>
-      </CardFooter>
-    </Card>
+      </dl>
+
+      {isAdmin && (
+        <div className="mt-6 w-full space-y-3">
+          <label className="block text-left text-gray-200">
+            <span className="block mb-1">Anzahl Freibier:</span>
+            <input
+              type="number"
+              value={amt}
+              min={1}
+              onChange={(e) => setAmt(Number(e.target.value))}
+              className="w-full rounded-lg border border-gray-500 bg-transparent px-4 py-2 text-white focus:ring-2 focus:ring-orange-400"
+            />
+          </label>
+          <Button className="w-full" onClick={addFreeBeer}>
+            Freibier hinzufügen
+          </Button>
+        </div>
+      )}
+    </div>
   );
 }

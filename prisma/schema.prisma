@@ -23,4 +23,20 @@ model User {
   balance      Int      @default(0)
   createdAt    DateTime @default(now())
   role         Role     @default(USER)
+  Drink        Drink[]
+}
+
+/// Ein einzelner Counter für Freibier
+model FreeBeer {
+  id    String @id
+  count Int    @default(0)
+}
+
+model Drink {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+
+  @@index([userId])
 }

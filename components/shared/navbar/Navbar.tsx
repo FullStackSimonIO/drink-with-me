@@ -25,7 +25,7 @@ const Navbar = () => {
         />
 
         <p className="h2-bold font-spaceGrotesk text-primary-500 max-sm:hidden">
-          Party<span className="black">Keller</span>
+          Promille<span className="black">Crew</span>
         </p>
       </Link>
 

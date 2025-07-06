@@ -1,9 +1,10 @@
+// components/home/DrinkTable.tsx
 "use client";
 
 import React, { useState, useMemo } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Plus, Minus, Beer } from "lucide-react";
+import { Plus, Beer, Loader2 } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -15,6 +16,15 @@ import {
 import { Button } from "../ui/button";
 import type { Role } from "@prisma/client";
 import { toast } from "sonner";
+import { cn } from "@/app/lib/utils";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
 
 export type UserType = {
   id: string;
@@ -37,6 +47,9 @@ export default React.memo(function DrinkTable({
   const meId = me?.id;
   const isAdmin = me?.role === "ADMIN";
 
+  // track which row is loading
+  const [loadingId, setLoadingId] = useState<string | null>(null);
+
   // Sort-Key State
   const [sortKey, setSortKey] = useState<"currScore" | "balance" | "name">(
     "currScore"
@@ -57,8 +70,8 @@ export default React.memo(function DrinkTable({
   }, [users, sortKey]);
 
   return (
-    <div className="w-full px-2 md:px-4 lg:px-8 py-4">
-      {/* Sortier-Auswahl */}
+    <div className="w-full md:px-4 lg:px-8 py-4">
+      {/* Sort Dropdown */}
       <div className="flex justify-end pb-2">
         <label className="flex items-center space-x-2 text-gray-600 dark:text-gray-200">
           <span>Sortieren:</span>
@@ -80,24 +93,25 @@ export default React.memo(function DrinkTable({
         <Table className="min-w-full table-fixed text-base text-dark-400 dark:text-light-200 bg-transparent">
           <TableHeader>
             <TableRow className="bg-light-800 dark:bg-dark-400">
-              <TableHead className="px-4 py-3 text-center text-orange-400"></TableHead>
-              <TableHead className="px-4 py-3 text-left text-orange-400 font-bold text-sm">
-                Name:
+              <TableHead className="text-xs lg:px-4 py-3 text-center text-orange-400" />
+              <TableHead className="text-xs lg:px-4 py-3 text-left text-orange-400 font-bold">
+                Name
               </TableHead>
-              <TableHead className="px-4 py-3 text-center text-orange-400 font-bold text-sm">
-                Guthaben:
+              <TableHead className="text-xs lg:px-4 py-3 text-center text-orange-400 font-bold">
+                Konto
               </TableHead>
-              <TableHead className="px-4 py-3 text-center text-orange-400 font-bold text-sm">
-                Zähler:
+              <TableHead className="text-xs lg:px-4 py-3 text-center text-orange-400 font-bold">
+                Zähler
               </TableHead>
-              <TableHead className="px-4 py-3 text-center text-orange-400 font-bold text-sm">
-                Aktion:
+              <TableHead className="text-xs lg:px-4 py-3 text-center text-orange-400 font-bold">
+                Aktion
               </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {sortedUsers.map((u, idx) => {
               const isMe = u.id === meId;
+              const isLoading = loadingId === u.id;
               return (
                 <TableRow
                   key={u.id}
@@ -107,65 +121,105 @@ export default React.memo(function DrinkTable({
                       : "bg-light-600 dark:bg-dark-200"
                   }
                 >
-                  {/* Avatar */}
-                  <TableCell className="px-4 py-3 bg-transparent text-center">
+                  {/* Avatar with Modal */}
+                  <TableCell className="md:px-4 py-3 bg-transparent text-center">
                     {u.profileImage ? (
-                      <Image
-                        src={u.profileImage}
-                        alt={u.name}
-                        width={40}
-                        height={40}
-                        className="rounded-full object-cover"
-                      />
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <button type="button" className="focus:outline-none">
+                            <Image
+                              src={u.profileImage}
+                              alt={u.name}
+                              width={40}
+                              height={40}
+                              className="rounded-full object-cover"
+                            />
+                          </button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-lg max-w-xs p-0">
+                          <DialogHeader>
+                            <DialogTitle>{u.name}</DialogTitle>
+                          </DialogHeader>
+                          <div className="relative w-full h-0 pb-[100%]">
+                            {/* square */}
+                            <Image
+                              src={u.profileImage}
+                              alt={u.name}
+                              fill
+                              className="object-cover rounded-lg"
+                            />
+                          </div>
+                          <DialogClose className="absolute top-2 right-2 p-1">
+                            ✕
+                          </DialogClose>
+                        </DialogContent>
+                      </Dialog>
                     ) : (
                       <div className="w-10 h-10 rounded-full bg-gray-500 mx-auto" />
                     )}
                   </TableCell>
 
                   {/* Name */}
-                  <TableCell className="px-4 py-3 truncate bg-transparent text-gray-600 dark:text-gray-400">
+                  <TableCell className="lg:px-4 py-3 truncate bg-transparent text-gray-600 dark:text-gray-400">
                     {u.name}
                   </TableCell>
 
-                  {/* Balance */}
-                  <TableCell className="px-4 py-3 text-center bg-transparent text-gray-600 dark:text-gray-400">
+                  {/* Balance with color */}
+                  <TableCell
+                    className={cn(
+                      "lg:px-4 py-3 text-center bg-transparent",
+                      u.balance < 0
+                        ? "text-red-500"
+                        : u.balance > 0
+                          ? "text-green-500"
+                          : "text-gray-600 dark:text-gray-400"
+                    )}
+                  >
                     {u.balance}
                   </TableCell>
 
                   {/* CurrScore */}
-                  <TableCell className="px-4 py-3 text-center bg-transparent text-gray-600 dark:text-gray-400">
+                  <TableCell className="lg:px-4 py-3 text-center bg-transparent text-gray-600 dark:text-gray-400">
                     {u.currScore}
                   </TableCell>
 
                   {/* Actions */}
-                  <TableCell className="px-4 py-3 bg-transparent">
+                  <TableCell className="lg:px-4 py-3 bg-transparent">
                     <div className="flex items-center justify-center gap-2">
-                      {/* +1 Balance nur Admin */}
+                      {/* +1 Balance only for admin */}
                       {isAdmin && (
                         <Button
                           size="icon"
                           variant="secondary"
                           className="p-2"
                           onClick={async () => {
+                            setLoadingId(u.id);
                             await fetch(`/api/users/${u.id}/balance`, {
                               method: "PATCH",
                               headers: { "Content-Type": "application/json" },
                               body: JSON.stringify({ delta: +1 }),
                             });
+                            setLoadingId(null);
                             router.refresh();
                           }}
+                          disabled={isLoading}
                         >
-                          <Plus className="w-4 h-4 text-orange-400 dark:text-orange-400" />
+                          {isLoading ? (
+                            <Loader2 className="w-4 h-4 animate-spin text-orange-400" />
+                          ) : (
+                            <Plus className="w-4 h-4 text-orange-400" />
+                          )}
                         </Button>
                       )}
 
-                      {/* Bier trinken / Zähler hoch */}
+                      {/* Drink button */}
                       {(isAdmin || isMe) && (
                         <Button
                           size="icon"
                           variant="secondary"
                           className="p-2"
                           onClick={async () => {
+                            setLoadingId(u.id);
                             await fetch(`/api/users/${u.id}/drink`, {
                               method: "POST",
                             });
@@ -178,9 +232,15 @@ export default React.memo(function DrinkTable({
                                 onClick: () => console.log("Undo"),
                               },
                             });
+                            setLoadingId(null);
                           }}
+                          disabled={isLoading}
                         >
-                          <Beer className="w-4 h-4 text-orange-400 dark:text-orange-400" />
+                          {isLoading ? (
+                            <Loader2 className="w-4 h-4 animate-spin text-orange-400" />
+                          ) : (
+                            <Beer className="w-4 h-4 text-orange-400" />
+                          )}
                         </Button>
                       )}
                     </div>

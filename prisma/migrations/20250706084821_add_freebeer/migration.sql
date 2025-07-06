@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "FreeBeer" ALTER COLUMN "id" DROP DEFAULT;
