@@ -78,28 +78,32 @@ export function BeerTipper() {
   return (
     <Card className="max-w-md mx-auto">
       <CardHeader>
-        <CardTitle>Bier spenden</CardTitle>
-        <CardDescription>
+        <CardTitle className="text-primary-500">Bier ausgeben:</CardTitle>
+        <CardDescription className="text-white ">
           Verschenke ein oder mehrere Bier an einen Freund.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Empfänger auswählen */}
         <div>
-          <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
-            Empfänger
+          <label className="block mb-1 text-sm font-semibold text-primary-500">
+            Empfänger:
           </label>
           <Select
             value={targetId}
             onValueChange={setTargetId}
             disabled={submitting}
           >
-            <SelectTrigger className="w-full">
+            <SelectTrigger className="w-full text-white">
               <SelectValue placeholder="Wähle einen Nutzer" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="background-light800_dark300">
               {choices.map((u) => (
-                <SelectItem key={u.id} value={u.id}>
+                <SelectItem
+                  key={u.id}
+                  value={u.id}
+                  className="text-primary-500"
+                >
                   {u.name}
                 </SelectItem>
               ))}
@@ -125,7 +129,7 @@ export function BeerTipper() {
         <Button
           onClick={handleSubmit}
           disabled={submitting || !targetId}
-          className="w-full"
+          className="w-full bg-primary-500 "
         >
           {submitting ? "Spende läuft…" : "Bier spenden"}
         </Button>

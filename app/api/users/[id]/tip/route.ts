@@ -9,43 +9,53 @@ export async function POST(
   req: Request,
   { params }: { params: { id: string } }
 ) {
-  // 1) Authentifizieren
+  // 1) Auth-Check
   const { userId: spenderClerkId } = auth();
   if (!spenderClerkId) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
 
-  // 2) Spender in DB laden
+  // 2) Spender aus DB holen (nur die ID reicht jetzt)
   const spender = await prisma.user.findUnique({
     where: { clerkUserId: spenderClerkId },
     select: { id: true },
   });
   if (!spender) {
-    return new NextResponse("Spender not found", { status: 404 });
+    return new NextResponse("Spender nicht gefunden", { status: 404 });
   }
 
-  // 3) Ziel-User prüfen
+  // 3) Ziel-User prüfen (darf sich nicht selbst tippen)
   const targetId = params.id;
   if (targetId === spender.id) {
-    // Optional: Selbst-Spenden verbieten
     return new NextResponse("Cannot tip yourself", { status: 400 });
   }
 
-  // 4) Body auslesen
+  // 4) Payload auslesen
   const { amount } = (await req.json()) as { amount?: number };
   if (typeof amount !== "number" || amount < 1) {
     return new NextResponse("Bad Request", { status: 400 });
   }
 
-  // 5) Guthaben des Ziel-Users erhöhen
+  // 5) Transaktion: Ziel erhöhen, Spender reduzieren (auch ins Minus erlaubt)
   try {
-    const updated = await prisma.user.update({
-      where: { id: targetId },
-      data: { balance: { increment: amount } },
-      select: { id: true, balance: true },
+    const [updatedTarget, updatedSpender] = await prisma.$transaction([
+      prisma.user.update({
+        where: { id: targetId },
+        data: { balance: { increment: amount } },
+        select: { id: true, balance: true },
+      }),
+      prisma.user.update({
+        where: { id: spender.id },
+        data: { balance: { decrement: amount } },
+        select: { id: true, balance: true },
+      }),
+    ]);
+
+    return NextResponse.json({
+      target: updatedTarget,
+      you: updatedSpender,
     });
-    return NextResponse.json(updated);
-  } catch {
-    return new NextResponse("Target user not found", { status: 404 });
+  } catch (err) {
+    return new NextResponse("Fehler beim Spenden", { status: 500 });
   }
 }
