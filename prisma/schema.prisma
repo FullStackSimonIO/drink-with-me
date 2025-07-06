@@ -22,10 +22,13 @@ model User {
   balance          Int       @default(0)
   tokens           Int       @default(0)
   purchaseProgress Int       @default(0)
+  level            Int       @default(1)
+  levelProgress    Int       @default(0)
   lastActive       DateTime? // ← hier
-  createdAt        DateTime  @default(now())
-  role             Role      @default(USER)
-  Drink            Drink[]
+
+  createdAt DateTime @default(now())
+  role      Role     @default(USER)
+  Drink     Drink[]
 }
 
 model FreeBeer {

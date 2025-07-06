@@ -5,7 +5,7 @@ import { prisma } from "@/app/lib/prisma";
 export const runtime = "nodejs";
 
 export async function POST(
-  req: Request,
+  _req: Request,
   { params }: { params: { id: string } }
 ) {
   const userId = params.id;
@@ -18,43 +18,63 @@ export async function POST(
   });
 
   // 2) User existiert?
-  const user = await prisma.user.findUnique({ where: { id: userId } });
-  if (!user) return new NextResponse("User not found", { status: 404 });
-
-  // 3) Transaktion: Pool oder Balance anpassen, UND in jedem Fall einen Drink‐Eintrag erstellen
-  if (fb.count > 0) {
-    await prisma.$transaction([
-      prisma.freeBeer.update({
-        where: { id: "singleton" },
-        data: { count: { decrement: 1 } },
-      }),
-      prisma.user.update({
-        where: { id: userId },
-        data: { currScore: { increment: 1 } },
-      }),
-      prisma.drink.create({
-        data: {
-          userId,
-          // createdAt wird automatisch auf now gesetzt
-        },
-      }),
-    ]);
-  } else {
-    await prisma.$transaction([
-      prisma.user.update({
-        where: { id: userId },
-        data: {
-          currScore: { increment: 1 },
-          balance: { decrement: 1 },
-        },
-      }),
-      prisma.drink.create({
-        data: {
-          userId,
-        },
-      }),
-    ]);
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      id: true,
+      level: true,
+      levelProgress: true,
+    },
+  });
+  if (!user) {
+    return new NextResponse("User not found", { status: 404 });
   }
 
-  return NextResponse.json({ ok: true });
+  // 3) Berechne neues levelProgress und ob wir leveln
+  const newProgress = user.levelProgress + 1;
+  const willLevelUp = newProgress >= user.level;
+
+  // 4) Transaktion: Freibier-Pool/Balance anpassen + Drink anlegen + Level-Logik
+  const updatedUser = await prisma.$transaction(async (tx) => {
+    // a) Freibier-Pool oder Balance
+    if (fb.count > 0) {
+      await tx.freeBeer.update({
+        where: { id: "singleton" },
+        data: { count: { decrement: 1 } },
+      });
+    } else {
+      await tx.user.update({
+        where: { id: userId },
+        data: { balance: { decrement: 1 } },
+      });
+    }
+
+    // b) currScore & levelProgress (+ optional LevelUp)
+    const userUpdateData: any = {
+      currScore: { increment: 1 },
+      levelProgress: willLevelUp ? { set: 0 } : { increment: 1 },
+    };
+    if (willLevelUp) {
+      userUpdateData.level = { increment: 1 };
+    }
+    const u = await tx.user.update({
+      where: { id: userId },
+      data: userUpdateData,
+      select: {
+        currScore: true,
+        balance: true,
+        level: true,
+        levelProgress: true,
+      },
+    });
+
+    // c) Drink‐Log
+    await tx.drink.create({
+      data: { userId },
+    });
+
+    return u;
+  });
+
+  return NextResponse.json({ ok: true, user: updatedUser });
 }

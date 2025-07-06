@@ -47,7 +47,7 @@ export default React.memo(function DrinkTable({
   const meId = me?.id;
   const isAdmin = me?.role === "ADMIN";
 
-  // track which row is loading
+  // hier merken wir uns, bei welcher Zeile gerade ein Request läuft
   const [loadingId, setLoadingId] = useState<string | null>(null);
 
   // Sort-Key State
@@ -68,6 +68,30 @@ export default React.memo(function DrinkTable({
         return arr.sort((a, b) => b.currScore - a.currScore);
     }
   }, [users, sortKey]);
+
+  // universeller Handler für "Bier trinken"
+  const handleDrink = async (userId: string) => {
+    setLoadingId(userId);
+    try {
+      const res = await fetch(`/api/users/${userId}/drink`, {
+        method: "POST",
+      });
+      if (!res.ok) {
+        // wenn die API zurückweist, zeige den Fehlertext
+        const text = await res.text();
+        toast.error(`Fehler: ${text}`);
+      } else {
+        // falls alles gut, evtl. die neuen Werte auslesen
+        const { user: updated } = await res.json();
+        toast.success("🍻 Prost!");
+      }
+    } catch (err: any) {
+      toast.error(`Netzwerkfehler: ${err.message}`);
+    } finally {
+      setLoadingId(null);
+      router.refresh();
+    }
+  };
 
   return (
     <div className="w-full md:px-4 lg:px-8 py-4">
@@ -121,12 +145,12 @@ export default React.memo(function DrinkTable({
                       : "bg-light-600 dark:bg-dark-200"
                   }
                 >
-                  {/* Avatar with Modal */}
+                  {/* Avatar mit Klick-Dialog */}
                   <TableCell className="md:px-4 py-3 bg-transparent text-center">
                     {u.profileImage ? (
                       <Dialog>
                         <DialogTrigger asChild>
-                          <button type="button" className="focus:outline-none">
+                          <button className="focus:outline-none">
                             <Image
                               src={u.profileImage}
                               alt={u.name}
@@ -141,7 +165,6 @@ export default React.memo(function DrinkTable({
                             <DialogTitle>{u.name}</DialogTitle>
                           </DialogHeader>
                           <div className="relative w-full h-0 pb-[100%]">
-                            {/* square */}
                             <Image
                               src={u.profileImage}
                               alt={u.name}
@@ -164,7 +187,7 @@ export default React.memo(function DrinkTable({
                     {u.name}
                   </TableCell>
 
-                  {/* Balance with color */}
+                  {/* Balance mit Farbe */}
                   <TableCell
                     className={cn(
                       "lg:px-4 py-3 text-center bg-transparent",
@@ -183,10 +206,10 @@ export default React.memo(function DrinkTable({
                     {u.currScore}
                   </TableCell>
 
-                  {/* Actions */}
+                  {/* Aktionen */}
                   <TableCell className="lg:px-4 py-3 bg-transparent">
                     <div className="flex items-center justify-center gap-2">
-                      {/* +1 Balance only for admin */}
+                      {/* +1 Balance (Admin) */}
                       {isAdmin && (
                         <Button
                           size="icon"
@@ -194,11 +217,15 @@ export default React.memo(function DrinkTable({
                           className="p-2"
                           onClick={async () => {
                             setLoadingId(u.id);
-                            await fetch(`/api/users/${u.id}/balance`, {
-                              method: "PATCH",
-                              headers: { "Content-Type": "application/json" },
-                              body: JSON.stringify({ delta: +1 }),
-                            });
+                            try {
+                              await fetch(`/api/users/${u.id}/balance`, {
+                                method: "PATCH",
+                                headers: {
+                                  "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify({ delta: +1 }),
+                              });
+                            } catch {}
                             setLoadingId(null);
                             router.refresh();
                           }}
@@ -212,28 +239,13 @@ export default React.memo(function DrinkTable({
                         </Button>
                       )}
 
-                      {/* Drink button */}
+                      {/* Bier trinken */}
                       {(isAdmin || isMe) && (
                         <Button
                           size="icon"
                           variant="secondary"
                           className="p-2"
-                          onClick={async () => {
-                            setLoadingId(u.id);
-                            await fetch(`/api/users/${u.id}/drink`, {
-                              method: "POST",
-                            });
-                            router.refresh();
-                            toast("🍻 Prost!", {
-                              description:
-                                "Dein Bier wurde gezählt und dein Guthaben aktualisiert.",
-                              action: {
-                                label: "Undo",
-                                onClick: () => console.log("Undo"),
-                              },
-                            });
-                            setLoadingId(null);
-                          }}
+                          onClick={() => handleDrink(u.id)}
                           disabled={isLoading}
                         >
                           {isLoading ? (

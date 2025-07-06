@@ -73,7 +73,6 @@ export default async function Page() {
   return (
     <main className="pb-8">
       <Hero />
-
       <DrinkTable users={users} me={me} />
     </main>
   );

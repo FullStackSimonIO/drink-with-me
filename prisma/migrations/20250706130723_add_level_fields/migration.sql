@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "User" ADD COLUMN     "level" INTEGER NOT NULL DEFAULT 1,
+ADD COLUMN     "levelProgress" INTEGER NOT NULL DEFAULT 0;

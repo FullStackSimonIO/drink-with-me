@@ -2,11 +2,25 @@
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/app/lib/prisma";
 import { ProfileCard } from "@/components/ProfileCard";
-import { ProfileMonthlyChart } from "@/components/ProfileDiagram";
+import dynamic from "next/dynamic";
 import React from "react";
 import { BeerTipper } from "@/components/BeerTipper";
 
-export const dynamic = "force-dynamic";
+// dynamisch laden, nur client‐seitig, unterstützt Suspense
+const ProfileMonthlyChart = dynamic(
+  () =>
+    import("@/components/ProfileDiagram").then(
+      (mod) => mod.ProfileMonthlyChart
+    ),
+  { ssr: false, suspense: true }
+);
+
+const ProfileLevelProgress = dynamic(
+  () => import("@/components/ProfileLevelProgress").then((mod) => mod.default),
+  { ssr: false, suspense: true }
+);
+
+const fetchMode = "force-dynamic";
 
 export default async function ProfilePage() {
   const { userId } = auth();
@@ -23,6 +37,8 @@ export default async function ProfilePage() {
       profileImage: true,
       balance: true,
       currScore: true,
+      level: true,
+      levelProgress: true,
     },
   });
   if (!me) {
@@ -32,18 +48,19 @@ export default async function ProfilePage() {
   }
 
   return (
-    <main className="min-h-screen py-24 flex justify-center items-center">
-      {/* Wir reduzieren die max-Breite, damit es nicht zu viel Rand gibt */}
+    <main className="min-h-screen py-24 flex justify-center items-center background-light800_dark300">
       <div className="w-full max-w-4xl grid gap-6 grid-cols-1 md:grid-cols-2">
-        {/* Profil-Karte (1/2 Breite ab md aufwärts) */}
-        <div>
-          <ProfileCard user={me} />
-        </div>
+        <ProfileCard user={me} />
 
-        {/* Chart (1/2 Breite ab md aufwärts) */}
-        <React.Suspense fallback={<div>Loading chart…</div>}>
+        <React.Suspense fallback={<div>Loading…</div>}>
           <ProfileMonthlyChart userId={me.id} />
+          <ProfileLevelProgress
+            score={me.currScore}
+            currentLevel={me.level}
+            progress={me.levelProgress}
+          />
         </React.Suspense>
+
         <BeerTipper />
       </div>
     </main>
