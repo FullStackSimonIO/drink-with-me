@@ -8,34 +8,41 @@ export async function GET(
 ) {
   const userId = params.id;
 
-  // Hole Drink-Logs gruppiert nach Jahr+Monat der letzten 12 Monate
-  const result = await prisma.drink.groupBy({
-    by: ["userId", "createdAt"],
+  // 1) Zeitraum: vor 11 Monaten bis jetzt
+  const since = new Date();
+  since.setMonth(since.getMonth() - 11);
+
+  // 2) Hol alle Drinks dieses Users seit dem Datum
+  const drinks = await prisma.drink.findMany({
     where: {
       userId,
-      createdAt: {
-        gte: new Date(new Date().setMonth(new Date().getMonth() - 11)),
-      },
+      createdAt: { gte: since },
     },
-    _count: { id: true },
-    orderBy: {
-      createdAt: "asc",
-    },
+    select: { createdAt: true },
   });
 
-  // Mappe in Chart-friendly Format
-  const data = result.map((r) => {
-    const createdAt = new Date(r.createdAt as Date);
-    const year = createdAt.getFullYear();
-    const month = createdAt.getMonth() + 1; // getMonth() is zero-based
-    const monthNum = year * 100 + month; // e.g. 202406
-    const date = new Date(year, month - 1, 1);
-    console.log("Mapping month:", monthNum, "for user:", userId);
-    return {
-      month: date.toLocaleString("default", { month: "short" }), // "Jan", "Feb" …
-      count: r._count.id,
-    };
+  // 3) Initialisiere Zähler für jeden Monats-Shortname
+  const months = Array.from({ length: 12 }, (_, i) =>
+    new Date(0, i).toLocaleString("default", { month: "short" })
+  );
+  const counts: Record<string, number> = {};
+  months.forEach((m) => {
+    counts[m] = 0;
   });
+
+  // 4) Zähle jeden Drink auf den richtigen Monat
+  for (const { createdAt } of drinks) {
+    const m = new Date(createdAt).toLocaleString("default", {
+      month: "short",
+    });
+    counts[m]++;
+  }
+
+  // 5) Baue das finale Array in Chart-friendly Form
+  const data = months.map((month) => ({
+    month,
+    count: counts[month] || 0,
+  }));
 
   return NextResponse.json(data);
 }
