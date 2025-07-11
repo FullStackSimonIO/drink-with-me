@@ -45,6 +45,7 @@ export default async function Page() {
     orderBy: { name: "asc" },
     select: {
       id: true,
+      level: true, // Level hinzufügen
       clerkUserId: true,
       role: true,
       name: true,
@@ -60,6 +61,7 @@ export default async function Page() {
         where: { clerkUserId: userId },
         select: {
           id: true,
+          level: true, // Level hinzufügen
           clerkUserId: true,
           role: true,
           name: true,

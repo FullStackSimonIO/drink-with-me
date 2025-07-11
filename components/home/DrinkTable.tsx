@@ -28,6 +28,7 @@ import {
 
 export type UserType = {
   id: string;
+  level: number;
   clerkUserId: string | null;
   role: Role;
   name: string;
@@ -162,7 +163,9 @@ export default React.memo(function DrinkTable({
                         </DialogTrigger>
                         <DialogContent className="sm:max-w-lg max-w-xs p-0">
                           <DialogHeader>
-                            <DialogTitle>{u.name}</DialogTitle>
+                            <DialogTitle>
+                              {u.name} {u.level}
+                            </DialogTitle>
                           </DialogHeader>
                           <div className="relative w-full h-0 pb-[100%]">
                             <Image
