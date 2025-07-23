@@ -1,10 +1,10 @@
-// components/Hero.tsx
+// components/coo.tsx
 "use client";
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useUser } from "@clerk/nextjs";
-import { TypewriterEffect } from "../ui/typewriter-effect";
+import { motion } from "framer-motion";
 
 type MeRecord = {
   id: string;
@@ -24,7 +24,6 @@ const Hero = () => {
     if (!isLoaded || !isSignedIn || !user) return;
 
     setLoading(true);
-    // benutze hier `/api/me`, das Du in app/api/me/route.ts schon implementiert hast
     fetch("/api/me", { cache: "no-store" })
       .then(async (res) => {
         if (!res.ok) throw new Error(await res.text());
@@ -42,24 +41,6 @@ const Hero = () => {
       });
   }, [isLoaded, isSignedIn, user]);
 
-  const heroHeaderWords = [
-    {
-      text: "Promillecrew",
-      className:
-        "text-4xl font-extrabold tracking-tight leading-none md:text-5xl xl:text-6xl text-primary-500",
-    },
-    {
-      text: "-",
-      className:
-        "text-4xl font-extrabold tracking-tight leading-none md:text-5xl xl:text-6xl text-white",
-    },
-    {
-      text: "Biertracker",
-      className:
-        "text-4xl font-extrabold tracking-tight leading-none md:text-5xl xl:text-6xl dark:text-primary-500 text-primary-500",
-    },
-  ];
-
   function scrollToSection(e: React.MouseEvent) {
     e.preventDefault();
     document
@@ -67,65 +48,213 @@ const Hero = () => {
       ?.scrollIntoView({ behavior: "smooth" });
   }
 
+  const StatCard = ({
+    label,
+    value,
+    icon,
+    gradient,
+  }: {
+    label: string;
+    value: string | number;
+    icon: string;
+    gradient: string;
+  }) => (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      className={`relative overflow-hidden rounded-2xl p-4 sm:p-6 backdrop-blur-xl bg-gradient-to-br ${gradient} shadow-2xl border border-white/20`}
+    >
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-white/80 text-xs sm:text-sm font-medium uppercase tracking-wider">
+            {label}
+          </p>
+          <p className="text-white text-xl sm:text-2xl md:text-3xl font-bold mt-1">
+            {value}
+          </p>
+        </div>
+        <div className="text-2xl sm:text-3xl">{icon}</div>
+      </div>
+      <div className="absolute inset-0 bg-gradient-to-r from-white/5 to-transparent rounded-2xl"></div>
+    </motion.div>
+  );
+
   return (
-    <section className="relative flex flex-col items-center justify-center w-full h-screen bg-light-800 dark:bg-dark-300">
-      <div className="grid max-w-screen-xl px-6 py-12 mx-auto lg:grid-cols-12 lg:py-16">
-        <div className="lg:col-span-7 flex flex-col justify-center">
-          <TypewriterEffect words={heroHeaderWords} />
-
-          {isLoaded && isSignedIn ? (
-            loading ? (
-              <p className="mt-4 text-gray-600 dark:text-gray-400">Lade…</p>
-            ) : me ? (
-              <p className="mt-4 text-gray-600 dark:text-gray-400 md:text-lg lg:text-lg">
-                Herzlich willkommen zurück{" "}
-                <span className="font-semibold text-primary-500 dark:text-primary-500">
-                  {me.name}
-                </span>
-                !<br />
-                Dein Guthaben beträgt:{" "}
-                <span className="font-semibold text-primary-500 dark:text-primary-500">
-                  {me.balance} Biercoins!
-                </span>
-                <br />
-                Du hast dieses Jahr schon{" "}
-                <span className="font-semibold text-primary-500 dark:text-primary-500">
-                  {me.currScore} Bier{me.currScore === 1 ? "" : "e"}
-                </span>{" "}
-                getrunken.
-              </p>
-            ) : (
-              <p className="mt-4 text-red-500 md:text-lg lg:text-xl">
-                Fehler beim Laden Deines Profils.
-              </p>
-            )
-          ) : (
-            <p className="mt-4 text-gray-600 dark:text-gray-400 md:text-lg lg:text-xl">
-              Bitte melde Dich an.
-            </p>
-          )}
-        </div>
-
-        <div className="mt-10 lg:mt-0 lg:col-span-5 lg:flex lg:justify-end">
-          <div className="relative w-full h-96 lg:w-96 lg:h-96">
-            <Image
-              src="/assets/beer.png"
-              alt="Hero Beer"
-              width={500}
-              height={500}
-              className="object-contain"
-            />
-          </div>
-        </div>
+    <section className="relative min-h-screen w-full overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0">
+        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-gradient-to-r from-purple-400/20 to-pink-400/20 rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
+        <div className="absolute top-3/4 right-1/4 w-96 h-96 bg-gradient-to-r from-yellow-400/20 to-orange-400/20 rounded-full mix-blend-multiply filter blur-xl animate-pulse animation-delay-2000"></div>
+        <div className="absolute bottom-1/4 left-1/3 w-80 h-80 bg-gradient-to-r from-blue-400/20 to-cyan-400/20 rounded-full mix-blend-multiply filter blur-xl animate-pulse animation-delay-4000"></div>
       </div>
 
-      <div className="absolute bottom-8 left-0 right-0 flex justify-center">
-        <button
-          onClick={scrollToSection}
-          className="px-6 py-4 bg-primary-500 text-[#161821] rounded-lg font-bold hover:-translate-y-1 transition"
-        >
-          Alkoholiker des Monats
-        </button>
+      {/* Grid Pattern Overlay */}
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.02)_1px,transparent_1px)] bg-[size:50px_50px]"></div>
+
+      {/* Main Content */}
+      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 sm:px-6 lg:px-8">
+        <div className="w-full max-w-7xl mx-auto">
+          {/* Header Section */}
+          <motion.div
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-8 sm:mb-12"
+          >
+            <motion.h1
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black tracking-tighter mb-4"
+            >
+              <span className="bg-gradient-to-r from-orange-400 via-amber-500 to-yellow-500 bg-clip-text text-transparent">
+                Promillecrew
+              </span>{" "}
+              <span className="bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+                Biertracker
+              </span>
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6, duration: 0.8 }}
+              className="text-white/70 text-base sm:text-lg md:text-xl max-w-2xl mx-auto mt-4 sm:mt-6 leading-relaxed"
+            >
+              Die ultimative Plattform für digitales Bier-Tracking mit Freunden
+            </motion.p>
+          </motion.div>
+
+          {/* User Stats Section */}
+          {isLoaded && isSignedIn && me && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.5, duration: 0.8 }}
+              className="mb-8 sm:mb-12"
+            >
+              {/* Welcome Message */}
+              <div className="text-center mb-6 sm:mb-8">
+                <motion.h2
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.7, duration: 0.6 }}
+                  className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-2"
+                >
+                  Willkommen zurück,{" "}
+                  <span className="bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
+                    {me.name}
+                  </span>
+                  ! 🍻
+                </motion.h2>
+              </div>
+
+              {/* Stats Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-4xl mx-auto">
+                <StatCard
+                  label="Biercoins"
+                  value={me.balance}
+                  icon="🪙"
+                  gradient="from-yellow-600/80 to-orange-600/80"
+                />
+                <StatCard
+                  label="Biere dieses Jahr"
+                  value={me.currScore}
+                  icon="🍺"
+                  gradient="from-blue-600/80 to-purple-600/80"
+                />
+                <div className="sm:col-span-2 lg:col-span-1">
+                  <StatCard
+                    label="Status"
+                    value="Online"
+                    icon="🟢"
+                    gradient="from-green-600/80 to-emerald-600/80"
+                  />
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {/* Beer Image with Floating Animation */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 1, duration: 0.8 }}
+            className="flex justify-center mb-8 sm:mb-12"
+          >
+            <motion.div
+              animate={{
+                y: [0, -20, 0],
+                rotate: [0, 5, -5, 0],
+              }}
+              transition={{
+                duration: 4,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+              className="relative"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/30 to-orange-400/30 rounded-full blur-2xl scale-150"></div>
+              <Image
+                src="/assets/beer.png"
+                alt="Hero Beer"
+                width={200}
+                height={200}
+                className="relative z-10 drop-shadow-2xl w-32 h-32 sm:w-48 sm:h-48 md:w-56 md:h-56 object-contain"
+              />
+            </motion.div>
+          </motion.div>
+
+          {/* CTA Button */}
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.2, duration: 0.8 }}
+            className="flex justify-center"
+          >
+            <button
+              onClick={scrollToSection}
+              className="group relative overflow-hidden rounded-2xl bg-gradient-to-r from-orange-500 to-yellow-500 px-6 sm:px-8 py-3 sm:py-4 font-bold text-black text-sm sm:text-base md:text-lg shadow-2xl transition-all duration-300 hover:scale-105 hover:shadow-orange-500/25"
+            >
+              <span className="relative z-10 flex items-center gap-2">
+                🏆 Alkoholiker des Monats
+                <motion.span
+                  animate={{ x: [0, 5, 0] }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                >
+                  →
+                </motion.span>
+              </span>
+              <div className="absolute inset-0 bg-gradient-to-r from-yellow-400 to-orange-400 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+            </button>
+          </motion.div>
+
+          {/* Loading/Error States */}
+          {isLoaded && isSignedIn && loading && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-center"
+            >
+              <div className="inline-flex items-center gap-2 text-white/70">
+                <div className="w-4 h-4 border-2 border-white/20 border-t-white/70 rounded-full animate-spin"></div>
+                Lade deine Daten...
+              </div>
+            </motion.div>
+          )}
+
+          {!isLoaded || (!isSignedIn && isLoaded) ? (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-center"
+            >
+              <p className="text-white/70 text-lg mb-4">
+                🔐 Melde dich an für das ultimative Bier-Erlebnis
+              </p>
+            </motion.div>
+          ) : null}
+        </div>
       </div>
     </section>
   );
