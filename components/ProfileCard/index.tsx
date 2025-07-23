@@ -99,22 +99,22 @@ export function ProfileCard({ user }: { user: Me }) {
     >
       {/* Background Effects */}
       <div className="absolute inset-0">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-yellow-400/20 to-orange-400/20 rounded-full blur-2xl"></div>
-        <div className="absolute bottom-0 left-0 w-40 h-40 bg-gradient-to-tr from-purple-400/20 to-pink-400/20 rounded-full blur-2xl"></div>
+        <div className="absolute top-0 right-0 w-24 h-24 sm:w-32 sm:h-32 bg-gradient-to-br from-yellow-400/20 to-orange-400/20 rounded-full blur-2xl"></div>
+        <div className="absolute bottom-0 left-0 w-32 h-32 sm:w-40 sm:h-40 bg-gradient-to-tr from-purple-400/20 to-pink-400/20 rounded-full blur-2xl"></div>
       </div>
 
       {/* Grid Pattern */}
       <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.02)_1px,transparent_1px)] bg-[size:20px_20px]"></div>
 
-      <div className="relative z-10 p-6">
+      <div className="relative z-10 p-4 sm:p-6">
         {/* Header Section */}
-        <div className="text-center mb-6">
+        <div className="text-center mb-4 sm:mb-6">
           {/* Profile Image */}
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.5 }}
-            className="relative w-24 h-24 mx-auto mb-4"
+            className="relative w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-3 sm:mb-4"
           >
             <div className="absolute inset-0 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full blur-md opacity-50"></div>
             {user.profileImage ? (
@@ -125,7 +125,7 @@ export function ProfileCard({ user }: { user: Me }) {
                 className="relative z-10 rounded-full object-cover border-2 border-white/20"
               />
             ) : (
-              <div className="relative z-10 w-full h-full bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white text-2xl font-bold border-2 border-white/20">
+              <div className="relative z-10 w-full h-full bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white text-lg sm:text-2xl font-bold border-2 border-white/20">
                 {user.name.charAt(0).toUpperCase()}
               </div>
             )}
@@ -135,7 +135,7 @@ export function ProfileCard({ user }: { user: Me }) {
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ delay: 0.5, type: "spring" }}
-              className="absolute -bottom-2 -right-2 bg-gradient-to-r from-orange-500 to-yellow-500 text-black text-xs font-bold px-2 py-1 rounded-full border-2 border-white/20"
+              className="absolute -bottom-1 -right-1 sm:-bottom-2 sm:-right-2 bg-gradient-to-r from-orange-500 to-yellow-500 text-black text-xs font-bold px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full border-2 border-white/20"
             >
               LV {user.level}
             </motion.div>
@@ -146,7 +146,7 @@ export function ProfileCard({ user }: { user: Me }) {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.5 }}
-            className="text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent mb-1"
+            className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent mb-1"
           >
             {user.name}
           </motion.h2>
@@ -157,7 +157,7 @@ export function ProfileCard({ user }: { user: Me }) {
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.4, duration: 0.5 }}
-              className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-white/10 to-white/5 border border-white/20 mb-4"
+              className="inline-flex items-center gap-2 px-2 py-1 sm:px-3 rounded-full bg-gradient-to-r from-white/10 to-white/5 border border-white/20 mb-3 sm:mb-4"
             >
               <div
                 className={`p-1 rounded-full bg-gradient-to-r ${getRankColor(stats.rank)}`}
@@ -188,7 +188,7 @@ export function ProfileCard({ user }: { user: Me }) {
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex mb-6 bg-white/5 rounded-lg p-1">
+        <div className="flex mb-4 sm:mb-6 bg-white/5 rounded-lg p-1">
           {[
             { id: "overview", label: "Übersicht", icon: BarChart3 },
             { id: "stats", label: "Statistiken", icon: TrendingUp },
@@ -222,38 +222,38 @@ export function ProfileCard({ user }: { user: Me }) {
           {activeTab === "overview" && (
             <div className="space-y-4">
               {/* Main Stats Grid */}
-              <div className="grid grid-cols-2 gap-3">
-                <div className="bg-white/5 rounded-lg p-3 border border-white/10">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+                <div className="bg-white/5 rounded-lg p-2 sm:p-3 border border-white/10">
                   <div className="flex items-center gap-2 mb-1">
                     <Coins className="w-4 h-4 text-yellow-400" />
                     <span className="text-white/60 text-xs">Balance</span>
                   </div>
-                  <p className="text-white text-lg font-bold">
+                  <p className="text-white text-base sm:text-lg font-bold">
                     {user.balance} €
                   </p>
                 </div>
 
-                <div className="bg-white/5 rounded-lg p-3 border border-white/10">
+                <div className="bg-white/5 rounded-lg p-2 sm:p-3 border border-white/10">
                   <div className="flex items-center gap-2 mb-1">
                     <Target className="w-4 h-4 text-blue-400" />
                     <span className="text-white/60 text-xs">Dieses Jahr</span>
                   </div>
-                  <p className="text-white text-lg font-bold">
+                  <p className="text-white text-base sm:text-lg font-bold">
                     {user.currScore}
                   </p>
                 </div>
 
-                <div className="bg-white/5 rounded-lg p-3 border border-white/10">
+                <div className="bg-white/5 rounded-lg p-2 sm:p-3 border border-white/10">
                   <div className="flex items-center gap-2 mb-1">
                     <Zap className="w-4 h-4 text-purple-400" />
                     <span className="text-white/60 text-xs">Tokens</span>
                   </div>
-                  <p className="text-white text-lg font-bold">
+                  <p className="text-white text-base sm:text-lg font-bold">
                     {user.tokens || 0}
                   </p>
                 </div>
 
-                <div className="bg-white/5 rounded-lg p-3 border border-white/10">
+                <div className="bg-white/5 rounded-lg p-2 sm:p-3 border border-white/10">
                   <div className="flex items-center gap-2 mb-1">
                     <Activity className="w-4 h-4 text-green-400" />
                     <span className="text-white/60 text-xs">Level</span>
@@ -273,7 +273,7 @@ export function ProfileCard({ user }: { user: Me }) {
                 </div>
               ) : stats ? (
                 <div className="space-y-3">
-                  <div className="bg-white/5 rounded-lg p-3 border border-white/10">
+                  <div className="bg-white/5 rounded-lg p-2 sm:p-3 border border-white/10">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <BarChart3 className="w-4 h-4 text-orange-400" />
@@ -287,7 +287,7 @@ export function ProfileCard({ user }: { user: Me }) {
                     </div>
                   </div>
 
-                  <div className="bg-white/5 rounded-lg p-3 border border-white/10">
+                  <div className="bg-white/5 rounded-lg p-2 sm:p-3 border border-white/10">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <Calendar className="w-4 h-4 text-blue-400" />
@@ -301,7 +301,7 @@ export function ProfileCard({ user }: { user: Me }) {
                     </div>
                   </div>
 
-                  <div className="bg-white/5 rounded-lg p-3 border border-white/10">
+                  <div className="bg-white/5 rounded-lg p-2 sm:p-3 border border-white/10">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <TrendingUp className="w-4 h-4 text-green-400" />
@@ -315,7 +315,7 @@ export function ProfileCard({ user }: { user: Me }) {
                     </div>
                   </div>
 
-                  <div className="bg-white/5 rounded-lg p-3 border border-white/10">
+                  <div className="bg-white/5 rounded-lg p-2 sm:p-3 border border-white/10">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <Star className="w-4 h-4 text-yellow-400" />
@@ -352,7 +352,7 @@ export function ProfileCard({ user }: { user: Me }) {
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.1, duration: 0.3 }}
-                      className="flex items-center gap-3 bg-white/5 rounded-lg p-3 border border-white/10"
+                      className="flex items-center gap-3 bg-white/5 rounded-lg p-2 sm:p-3 border border-white/10"
                     >
                       <Trophy className="w-5 h-5 text-yellow-400" />
                       <span className="text-white/90 text-sm">
@@ -382,9 +382,9 @@ export function ProfileCard({ user }: { user: Me }) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.8, duration: 0.5 }}
-            className="mt-6 pt-6 border-t border-white/10"
+            className="mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-white/10"
           >
-            <div className="bg-gradient-to-r from-red-500/20 to-pink-500/20 rounded-lg p-4 border border-red-500/30">
+            <div className="bg-gradient-to-r from-red-500/20 to-pink-500/20 rounded-lg p-3 sm:p-4 border border-red-500/30">
               <h3 className="text-white font-bold text-sm mb-3 flex items-center gap-2">
                 <Crown className="w-4 h-4 text-yellow-400" />
                 Admin Panel
@@ -400,14 +400,14 @@ export function ProfileCard({ user }: { user: Me }) {
                     value={amt}
                     min={1}
                     onChange={(e) => setAmt(Number(e.target.value))}
-                    className="w-full rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-white text-sm placeholder-white/40 focus:ring-2 focus:ring-orange-400 focus:border-transparent"
+                    className="w-full rounded-lg border border-white/20 bg-white/10 px-2 sm:px-3 py-2 text-white text-sm placeholder-white/40 focus:ring-2 focus:ring-orange-400 focus:border-transparent"
                     placeholder="Anzahl eingeben..."
                   />
                 </div>
 
                 <Button
                   onClick={addFreeBeer}
-                  className="w-full bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-orange-600 hover:to-yellow-600 text-black font-bold py-2 px-4 rounded-lg transition-all duration-200 hover:scale-105 shadow-lg"
+                  className="w-full bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-orange-600 hover:to-yellow-600 text-black font-bold py-2 px-3 sm:px-4 rounded-lg transition-all duration-200 hover:scale-105 shadow-lg text-sm"
                 >
                   🍺 Freibier hinzufügen
                 </Button>

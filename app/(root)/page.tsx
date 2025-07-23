@@ -1,6 +1,7 @@
 // app/page.tsx
 import Hero from "@/components/home/Hero";
 import DrinkTable, { UserType } from "@/components/home/DrinkTable";
+import { MonthlyComparisonChart } from "@/components/MonthlyComparisonChart";
 import { auth } from "@clerk/nextjs/server";
 import { clerkClient } from "@clerk/nextjs/server";
 import { prisma } from "../lib/prisma";
@@ -76,6 +77,13 @@ export default async function Page() {
     <main className="pb-8">
       <Hero />
       <DrinkTable users={users} me={me} />
+
+      {/* Monthly Comparison Chart Section */}
+      <section className="px-4 sm:px-6 lg:px-8 mt-16">
+        <div className="max-w-7xl mx-auto">
+          <MonthlyComparisonChart />
+        </div>
+      </section>
     </main>
   );
 }

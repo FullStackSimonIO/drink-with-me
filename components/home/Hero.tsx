@@ -63,18 +63,18 @@ const Hero = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
-      className={`relative overflow-hidden rounded-2xl p-4 sm:p-6 backdrop-blur-xl bg-gradient-to-br ${gradient} shadow-2xl border border-white/20`}
+      className={`relative overflow-hidden rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-6 backdrop-blur-xl bg-gradient-to-br ${gradient} shadow-2xl border border-white/20`}
     >
       <div className="flex items-center justify-between">
         <div>
           <p className="text-white/80 text-xs sm:text-sm font-medium uppercase tracking-wider">
             {label}
           </p>
-          <p className="text-white text-xl sm:text-2xl md:text-3xl font-bold mt-1">
+          <p className="text-white text-lg sm:text-xl md:text-2xl font-bold mt-1">
             {value}
           </p>
         </div>
-        <div className="text-2xl sm:text-3xl">{icon}</div>
+        <div className="text-xl sm:text-2xl md:text-3xl">{icon}</div>
       </div>
       <div className="absolute inset-0 bg-gradient-to-r from-white/5 to-transparent rounded-2xl"></div>
     </motion.div>
@@ -93,7 +93,7 @@ const Hero = () => {
       <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.02)_1px,transparent_1px)] bg-[size:50px_50px]"></div>
 
       {/* Main Content */}
-      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 sm:px-6 lg:px-8">
+      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen pt-20 sm:pt-24 px-4 sm:px-6 lg:px-8">
         <div className="w-full max-w-7xl mx-auto">
           {/* Header Section */}
           <motion.div
@@ -106,7 +106,7 @@ const Hero = () => {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black tracking-tighter mb-4"
+              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black tracking-tighter mb-4"
             >
               <span className="bg-gradient-to-r from-orange-400 via-amber-500 to-yellow-500 bg-clip-text text-transparent">
                 Promillecrew
@@ -139,7 +139,7 @@ const Hero = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.7, duration: 0.6 }}
-                  className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-2"
+                  className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-2"
                 >
                   Willkommen zurück,{" "}
                   <span className="bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
@@ -150,7 +150,7 @@ const Hero = () => {
               </div>
 
               {/* Stats Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-4xl mx-auto">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 max-w-4xl mx-auto">
                 <StatCard
                   label="Biercoins"
                   value={me.balance}

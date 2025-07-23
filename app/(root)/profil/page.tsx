@@ -59,32 +59,32 @@ export default async function ProfilePage() {
       {/* Grid Pattern */}
       <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.02)_1px,transparent_1px)] bg-[size:50px_50px]"></div>
 
-      <div className="relative z-10 pt-24 md:pt-28 lg:pt-32 pb-8 px-4 sm:px-6 lg:px-8">
+      <div className="relative z-10 pt-20 sm:pt-24 md:pt-28 lg:pt-32 pb-8 px-3 sm:px-4 md:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           {/* Page Header */}
-          <div className="text-center mb-8">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tighter mb-4">
+          <div className="text-center mb-6 sm:mb-8">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black tracking-tighter mb-3 sm:mb-4">
               <span className="bg-gradient-to-r from-orange-400 via-amber-500 to-yellow-500 bg-clip-text text-transparent">
                 Mein Profil
               </span>
             </h1>
-            <p className="text-white/70 text-lg max-w-2xl mx-auto">
+            <p className="text-white/70 text-base sm:text-lg max-w-2xl mx-auto">
               Verwalte dein Profil und verfolge deine Statistiken
             </p>
           </div>
 
           {/* Content Grid */}
-          <div className="grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
+          <div className="grid gap-4 sm:gap-6 lg:grid-cols-2 xl:grid-cols-3">
             {/* Profile Card - Takes more space */}
             <div className="lg:col-span-1">
               <ProfileCard user={me} />
             </div>
 
             {/* Other Components */}
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               <React.Suspense
                 fallback={
-                  <div className="backdrop-blur-xl bg-white/5 rounded-2xl p-6 border border-white/10 shadow-2xl">
+                  <div className="backdrop-blur-xl bg-white/5 rounded-2xl p-4 sm:p-6 border border-white/10 shadow-2xl">
                     <div className="flex items-center justify-center py-8">
                       <div className="w-6 h-6 border-2 border-white/20 border-t-white/70 rounded-full animate-spin"></div>
                     </div>
