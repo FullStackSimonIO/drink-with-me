@@ -105,7 +105,7 @@ export default function CasinoPage() {
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="pt-8 pb-4 px-4 sm:px-6 lg:px-8"
+          className="pt-24 md:pt-28 lg:pt-32 pb-4 px-4 sm:px-6 lg:px-8"
         >
           <div className="max-w-7xl mx-auto text-center">
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter mb-4">

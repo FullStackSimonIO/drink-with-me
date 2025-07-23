@@ -103,10 +103,38 @@ export default function CasinoWheel({
 
     return (
       <g key={index}>
-                <defs>
-          <linearGradient id={`gradient-${index}`} x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor={segment.value > 0 ? (segment.value === 1 ? "#3b82f6" : segment.value === 2 ? "#10b981" : "#f59e0b") : "#374151"} />
-            <stop offset="100%" stopColor={segment.value > 0 ? (segment.value === 1 ? "#2563eb" : segment.value === 2 ? "#059669" : "#d97706") : "#1f2937"} />
+        <defs>
+          <linearGradient
+            id={`gradient-${index}`}
+            x1="0%"
+            y1="0%"
+            x2="100%"
+            y2="100%"
+          >
+            <stop
+              offset="0%"
+              stopColor={
+                segment.value > 0
+                  ? segment.value === 1
+                    ? "#3b82f6"
+                    : segment.value === 2
+                      ? "#10b981"
+                      : "#f59e0b"
+                  : "#374151"
+              }
+            />
+            <stop
+              offset="100%"
+              stopColor={
+                segment.value > 0
+                  ? segment.value === 1
+                    ? "#2563eb"
+                    : segment.value === 2
+                      ? "#059669"
+                      : "#d97706"
+                  : "#1f2937"
+              }
+            />
           </linearGradient>
         </defs>
         <path

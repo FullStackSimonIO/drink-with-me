@@ -8,6 +8,10 @@ export type Me = {
   profileImage: string | null;
   balance: number;
   currScore: number;
+  tokens?: number;
+  level?: number;
+  levelProgress?: number;
+  purchaseProgress?: number;
 };
 
 export function useMe() {

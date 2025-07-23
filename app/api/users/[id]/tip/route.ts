@@ -2,6 +2,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/app/lib/prisma";
+import { handleTokenGenerationInTransaction } from "@/app/lib/tokenLogic";
 
 export const runtime = "nodejs";
 
@@ -36,25 +37,30 @@ export async function POST(
     return new NextResponse("Bad Request", { status: 400 });
   }
 
-  // 5) Transaktion: Ziel erhöhen, Spender reduzieren (auch ins Minus erlaubt)
+  // 5) Transaktion: Ziel erhöhen, Spender reduzieren (auch ins Minus erlaubt) + Token-Logik
   try {
-    const [updatedTarget, updatedSpender] = await prisma.$transaction([
-      prisma.user.update({
+    const result = await prisma.$transaction(async (tx) => {
+      // Update target (increase balance)
+      const updatedTarget = await tx.user.update({
         where: { id: targetId },
         data: { balance: { increment: amount } },
         select: { id: true, balance: true },
-      }),
-      prisma.user.update({
+      });
+
+      // Update spender (decrease balance)
+      const updatedSpender = await tx.user.update({
         where: { id: spender.id },
         data: { balance: { decrement: amount } },
         select: { id: true, balance: true },
-      }),
-    ]);
+      });
 
-    return NextResponse.json({
-      target: updatedTarget,
-      you: updatedSpender,
+      // Handle token generation for the spender (balance decreased)
+      await handleTokenGenerationInTransaction(tx, spender.id, -amount);
+
+      return { target: updatedTarget, you: updatedSpender };
     });
+
+    return NextResponse.json(result);
   } catch (err) {
     return new NextResponse("Fehler beim Spenden", { status: 500 });
   }

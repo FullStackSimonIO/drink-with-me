@@ -111,7 +111,7 @@ const Hero = () => {
               <span className="bg-gradient-to-r from-orange-400 via-amber-500 to-yellow-500 bg-clip-text text-transparent">
                 Promillecrew
               </span>{" "}
-              <span className="bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r  bg-clip-text from-orange-400 via-amber-500 to-yellow-500 text-transparent">
                 Biertracker
               </span>
             </motion.h1>
@@ -216,7 +216,7 @@ const Hero = () => {
               onClick={scrollToSection}
               className="group relative overflow-hidden rounded-2xl bg-gradient-to-r from-orange-500 to-yellow-500 px-6 sm:px-8 py-3 sm:py-4 font-bold text-black text-sm sm:text-base md:text-lg shadow-2xl transition-all duration-300 hover:scale-105 hover:shadow-orange-500/25"
             >
-              <span className="relative z-10 flex items-center gap-2">
+              <span className="relative z-10 flex items-center text-white gap-2">
                 🏆 Alkoholiker des Monats
                 <motion.span
                   animate={{ x: [0, 5, 0] }}

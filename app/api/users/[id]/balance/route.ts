@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/app/lib/prisma";
+import { handleTokenGenerationInTransaction } from "@/app/lib/tokenLogic";
 
 export const runtime = "nodejs";
 
@@ -26,35 +27,23 @@ export async function PATCH(
     return new NextResponse("Forbidden", { status: 403 });
   }
 
-  // Transaktion: balance & token-Progress
+  // Transaktion: balance & token generation for balance decreases
   const updated = await prisma.$transaction(async (tx) => {
+    // Update balance first
     const u = await tx.user.update({
       where: { id: params.id },
       data: { balance: { increment: delta } },
       select: { id: true, balance: true, tokens: true, purchaseProgress: true },
     });
 
-    if (delta > 0) {
-      let prog = u.purchaseProgress + delta;
-      const tokensToAdd = Math.floor(prog / 10);
-      prog = prog % 10;
-      if (tokensToAdd > 0) {
-        await tx.user.update({
-          where: { id: params.id },
-          data: {
-            tokens: { increment: tokensToAdd },
-            purchaseProgress: prog,
-          },
-        });
-      } else {
-        await tx.user.update({
-          where: { id: params.id },
-          data: { purchaseProgress: prog },
-        });
-      }
-    }
+    // Handle token generation for balance decreases (every -10 balance = 1 token)
+    await handleTokenGenerationInTransaction(tx, params.id, delta);
 
-    return u;
+    // Return updated user data
+    return await tx.user.findUnique({
+      where: { id: params.id },
+      select: { id: true, balance: true, tokens: true, purchaseProgress: true },
+    });
   });
 
   return NextResponse.json(updated);

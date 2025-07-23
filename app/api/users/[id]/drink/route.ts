@@ -1,6 +1,7 @@
 // app/api/users/[id]/drink/route.ts
 import { NextResponse } from "next/server";
 import { prisma } from "@/app/lib/prisma";
+import { handleTokenGenerationInTransaction } from "@/app/lib/tokenLogic";
 
 export const runtime = "nodejs";
 
@@ -43,10 +44,14 @@ export async function POST(
         data: { count: { decrement: 1 } },
       });
     } else {
+      // Decrease balance by 1
       await tx.user.update({
         where: { id: userId },
         data: { balance: { decrement: 1 } },
       });
+
+      // Handle token generation for balance decrease (-1 balance)
+      await handleTokenGenerationInTransaction(tx, userId, -1);
     }
 
     // b) currScore & levelProgress (+ optional LevelUp)
